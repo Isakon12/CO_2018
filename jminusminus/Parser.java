@@ -1062,8 +1062,8 @@ public class Parser {
      * Parse a relational expression.
      * 
      * <pre>
-     *   relationalExpression ::= additiveExpression  // level 5
-     *                              [(GT | LE) additiveExpression 
+     *   relationalExpression ::= shiftExpression  // level 5
+     *                              [(GT | LE) shiftExpression 
      *                              | INSTANCEOF referenceType]
      * </pre>
      * 
@@ -1072,11 +1072,11 @@ public class Parser {
 
     private JExpression relationalExpression() {
         int line = scanner.token().line();
-        JExpression lhs = additiveExpression();
+        JExpression lhs = shiftExpression();
         if (have(GT)) {
-            return new JGreaterThanOp(line, lhs, additiveExpression());
+            return new JGreaterThanOp(line, lhs, shiftExpression());
         } else if (have(LE)) {
-            return new JLessEqualOp(line, lhs, additiveExpression());
+            return new JLessEqualOp(line, lhs, shiftExpression());
         } else if (have(INSTANCEOF)) {
             return new JInstanceOfOp(line, lhs, referenceType());
         } else {
@@ -1084,6 +1084,36 @@ public class Parser {
         }
     }
 
+    /**
+     * Parse a relational expression.
+     * 
+     * <pre>
+     *   shiftExpression ::= additiveExpression  // level 4
+     *                              [(ARSHIFT | ALSHIFT | LRSHIFT) additiveExpression 
+     *                             
+     * </pre>
+     * 
+     * @return an AST for a relationalExpression.
+     */
+
+    private JExpression shiftExpression() {
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = additiveExpression();
+        while (more) {
+            if (have(ARSHIFT)) {
+                lhs = new JArithRightShiftOp(line, lhs, additiveExpression());
+            } else if (have(ALSHIFT)) {
+                lhs = new JArithLeftShiftOp(line, lhs, additiveExpression());
+            } else if (have(LRSHIFT)) {
+                lhs = new JLogicRightShiftOp(line, lhs, additiveExpression());
+            } else {
+                more = false;
+            }
+        }
+        return lhs;
+    }
+    
     /**
      * Parse an additive expression.
      * 
@@ -1116,7 +1146,7 @@ public class Parser {
      * 
      * <pre>
      *   multiplicativeExpression ::= unaryExpression  // level 2
-     *                                  {(STAR | DIV) unaryExpression}
+     *                                  {(STAR | DIV | REM) unaryExpression}
      * </pre>
      * 
      * @return an AST for a multiplicativeExpression.

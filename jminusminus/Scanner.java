@@ -9,9 +9,6 @@ import java.io.LineNumberReader;
 import java.util.Hashtable;
 import static jminusminus.TokenKind.*;
 
-// STUFFF!!!
-
-
 /**
  * A lexical analyzer for j--, that has no backtracking mechanism.
  * 
@@ -190,12 +187,25 @@ class Scanner {
             }
         case '>':
             nextCh();
-            return new TokenInfo(GT, line);
+            if (ch == '>') {
+                nextCh();
+                if (ch == '>') {
+                	nextCh();
+                	return new TokenInfo(LRSHIFT, line);
+                } else {
+                	return new TokenInfo(ARSHIFT, line);
+                }
+            } else {
+                return new TokenInfo(GT, line);
+            }
         case '<':
             nextCh();
             if (ch == '=') {
                 nextCh();
                 return new TokenInfo(LE, line);
+            } else if (ch == '<') {
+            	nextCh();
+            	return new TokenInfo(ALSHIFT, line);
             } else {
                 reportScannerError("Operator < is not supported in j--.");
                 return getNextToken();

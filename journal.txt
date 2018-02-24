@@ -1,0 +1,32 @@
+http://www.javacodex.com/Operators/Operator-Precedence-Examples
+https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
+
+--> STEP 0
+/// TODO
+	Unary Complement
+	Inclusive OR
+	Exclusive OR
+	AND
+	Unary plus operator
+	
+/// DONE 
+	Remainder
+	Division
+	Shift Arithmetic Right	
+	Shift Arithmetic Right
+	Shift Logical Right
+
+--> STEP 1
+/// TODO	
+
+--> STEP 2
+/// TODO
+
+--> STEP 3
+/// TODO
+
+--> STEP 4
+/// TODO
+
+--> STEP 5
+/// TODO
