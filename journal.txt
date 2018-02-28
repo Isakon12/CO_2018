@@ -3,10 +3,10 @@ https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 
 --> STEP 0
 /// TODO
-	Unary Complement
-	Inclusive OR
-	Exclusive OR
-	AND
+	Unary Complement, ~
+	Inclusive OR |
+	Exclusive OR ^
+	AND &
 	Unary plus operator
 	
 /// DONE 
@@ -18,7 +18,15 @@ https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 
 --> STEP 1
 /// TODO	
-
+	Multi-line comments
+	Break Byte Catch Const Continue Default Do Double Final Finally
+	Float For Goto Implements Interface Long Native Short Strictfp
+	Switch Synchronized Throw Throws Transient Try Volatile
+	? != /= -= - *= >>= >>>= <<= >= ^= |= &= ||
+	:
+	
+/// DONE	
+	
 --> STEP 2
 /// TODO
 
