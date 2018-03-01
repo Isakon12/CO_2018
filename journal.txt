@@ -1,5 +1,6 @@
 http://www.javacodex.com/Operators/Operator-Precedence-Examples
 https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
+http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.php
 
 --> STEP 0
 /// TODO
