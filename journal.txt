@@ -3,10 +3,6 @@ https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 
 --> STEP 0
 /// TODO
-	Unary Complement, ~
-	Inclusive OR |
-	Exclusive OR ^
-	AND &
 	Unary plus operator
 	
 	
@@ -16,12 +12,15 @@ https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 	Shift Arithmetic Right	
 	Shift Arithmetic Right
 	Shift Logical Right
+	Inclusive OR |
+	Exclusive OR ^
+	AND &
+	Unary Complement, ~
 
 --> STEP 1
 /// TODO	
-	Literals
-	-(Unary)
-	GRAMMMAR
+	Literals (LexicalGrammar)
+	Grammar
 	
 /// DONE	
 	Multi-line comments

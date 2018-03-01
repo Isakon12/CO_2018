@@ -342,3 +342,61 @@ class JPreIncrementOp extends JUnaryExpression {
     }
 
 }
+
+/**
+ * The AST node for a unary complement expression.
+ */
+
+class JUnaryComplementOp extends JUnaryExpression {
+
+    /**
+     * Construct an AST node for a unary complement expression given its 
+     * line number, and the operand.
+     * 
+     * @param line
+     *            line in which the expression occurs in the source file.
+     * @param arg
+     *            the operand.
+     */
+
+    public JUnaryComplementOp(int line, JExpression arg) {
+        super(line, "~", arg);
+    }
+
+    /**
+     * Analyze the operand as a lhs (since there is a side effect), check types
+     * and determine the type of the result.
+     * 
+     * @param context
+     *            context in which names are resolved.
+     * @return the analyzed (and possibly rewritten) AST subtree.
+     */
+
+    public JExpression analyze(Context context) {
+        arg = (JExpression) arg.analyze(context);
+        arg.type().mustMatchExpected(line(), Type.INT);
+        type = Type.INT;
+        return this;
+    }
+
+    /**
+     * In generating code for a unary complement operation, we treat simple
+     * variable (JVariable) operands specially since the JVM has an unary complement
+     * instruction. Otherwise, we rely on the JLhs code generation support for
+     * generating the proper code. Notice that we distinguish between
+     * expressions that are statement expressions and those that are not; we
+     * insure the proper value is left atop the stack in the latter case.
+     * 
+     * @param output
+     *            the code emitter (basically an abstraction for producing the
+     *            .class file).
+     */
+
+    public void codegen(CLEmitter output) {
+        arg.codegen(output);
+        output.addNoArgInstruction(ICONST_M1);
+        output.addNoArgInstruction(IXOR);
+    }
+
+}
+

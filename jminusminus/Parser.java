@@ -1012,8 +1012,8 @@ public class Parser {
      * Parse a conditional-and expression.
      * 
      * <pre>
-     *   conditionalAndExpression ::= equalityExpression // level 10
-     *                                  {LAND equalityExpression}
+     *   conditionalAndExpression ::= inclusiveOrExpression // level 10
+     *                                  {LAND inclusiveOrExpression}
      * </pre>
      * 
      * @return an AST for a conditionalExpression.
@@ -1022,10 +1022,35 @@ public class Parser {
     private JExpression conditionalAndExpression() {
         int line = scanner.token().line();
         boolean more = true;
-        JExpression lhs = equalityExpression();
+        JExpression lhs = inclusiveOrExpression();
         while (more) {
             if (have(LAND)) {
-                lhs = new JLogicalAndOp(line, lhs, equalityExpression());
+                lhs = new JLogicalAndOp(line, lhs, inclusiveOrExpression());
+            } else {
+                more = false;
+            }
+        }
+        return lhs;
+    }
+    
+    /**
+     * Parse a inclusive or expression.
+     * 
+     * <pre>
+	 *		inclusiveOrExpression ::= exclusiveOrExpresion // Level 9
+	 *				{IOR exclusiveOrExpresion}
+     * </pre>
+     * 
+     * @return an AST for a inclusiveOrExpression.
+     */
+
+    private JExpression inclusiveOrExpression() {
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = exclusiveOrExpression();
+        while (more) {
+            if (have(IOR)) {
+                lhs = new JInclusiveOrOp(line, lhs, exclusiveOrExpression());
             } else {
                 more = false;
             }
@@ -1033,6 +1058,57 @@ public class Parser {
         return lhs;
     }
 
+    
+    /**
+     * Parse a exclusive or expression.
+     * 
+     * <pre>
+	 *		exclusiveOrExpression ::= andExpression // level 8
+     *                          {EOR andExpression}
+     * </pre>
+     * 
+     * @return an AST for a eorExpression.
+     */
+
+    private JExpression exclusiveOrExpression() {
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = andExpression();
+        while (more) {
+            if (have(EOR)) {
+                lhs = new JExclusiveOrOp(line, lhs, andExpression());
+            } else {
+                more = false;
+            }
+        }
+        return lhs;
+    }
+
+    /**
+     * Parse a and expression.
+     * 
+     * <pre>
+     *   andExpression ::= equalityExpression // level 7
+     *                          {AND equalityExpression}  }
+     * </pre>
+     * 
+     * @return an AST for a andExpression.
+     */
+
+    private JExpression andExpression() {
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = equalityExpression();
+        while (more) {
+            if (have(AND)) {
+                lhs = new JAndOp(line, lhs, equalityExpression());
+            } else {
+                more = false;
+            }
+        }
+        return lhs;
+    }
+    
     /**
      * Parse an equality expression.
      * 
@@ -1085,7 +1161,7 @@ public class Parser {
     }
 
     /**
-     * Parse a relational expression.
+     * Parse a shift expression.
      * 
      * <pre>
      *   shiftExpression ::= additiveExpression  // level 4
@@ -1093,7 +1169,7 @@ public class Parser {
      *                             
      * </pre>
      * 
-     * @return an AST for a relationalExpression.
+     * @return an AST for a shiftExpression.
      */
 
     private JExpression shiftExpression() {
@@ -1177,8 +1253,7 @@ public class Parser {
      * Parse an unary expression.
      * 
      * <pre>
-     *   unaryExpression ::= INC unaryExpression // level 1
-     *                     | MINUS unaryExpression
+     *   unaryExpression ::= (INC | MINUS | UCOMP) unaryExpression // level 1
      *                     | simpleUnaryExpression
      * </pre>
      * 
@@ -1191,6 +1266,8 @@ public class Parser {
             return new JPreIncrementOp(line, unaryExpression());
         } else if (have(MINUS)) {
             return new JNegateOp(line, unaryExpression());
+        } else if (have(UCOMP)) {
+            return new JUnaryComplementOp(line, unaryExpression());
         } else {
             return simpleUnaryExpression();
         }
