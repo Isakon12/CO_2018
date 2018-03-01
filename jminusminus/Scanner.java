@@ -87,9 +87,9 @@ class Scanner {
         reserved.put(CONTINUE.image(), CONTINUE);
         reserved.put(DEFAULT.image(), DEFAULT);
         reserved.put(DO.image(), DO);
-        reserved.put(DOUBLE.image(), DOBULE);
+        reserved.put(DOUBLE.image(), DOUBLE);
         reserved.put(FINAL.image(), FINAL);
-        reserved.put(FINALY.image(), FINALY);
+        reserved.put(FINALLY.image(), FINALLY);
         reserved.put(FLOAT.image(), FLOAT);
         reserved.put(FOR.image(), FOR);
         reserved.put(GOTO.image(), GOTO);
@@ -131,8 +131,23 @@ class Scanner {
                     while (ch != '\n' && ch != EOFCH) {
                         nextCh();
                     }
-                } 
-                else {
+                } else if(ch == '*') {
+                	nextCh();
+                	while (ch != EOFCH) {
+                        if(ch == '*') {
+                        	nextCh();
+                        	if(ch == '/') {
+                        		nextCh();
+                        		break;
+                        	}
+                        } else {
+                            nextCh();
+                        }
+                    }
+                } else if(ch == '=') {
+                	nextCh();
+                	return new TokenInfo(DIV_ASSIGN, line);
+                } else {
                 	return new TokenInfo(DIV, line);
                     //reportScannerError("Operator / is not supported in j--.");
                 }
@@ -166,6 +181,9 @@ class Scanner {
         case ',':
             nextCh();
             return new TokenInfo(COMMA, line);
+        case ':':
+        	nextCh();
+        	return new TokenInfo(COLON, line);
         case '=':
             nextCh();
             if (ch == '=') {
@@ -176,13 +194,34 @@ class Scanner {
             }
         case '!':
             nextCh();
-            return new TokenInfo(LNOT, line);
+            if(ch == '=') {
+            	nextCh();
+            	return new TokenInfo(NOT_EQUAL, line);
+            } else {
+            	return new TokenInfo(LNOT, line);
+            }
         case '*':
-            nextCh();
-            return new TokenInfo(STAR, line);
+        	nextCh();
+        	if (ch == '=') {
+                nextCh();
+                return new TokenInfo(STAR_ASSIGN, line);
+            } else {
+            	return new TokenInfo(STAR, line);
+            }
         case '%':
-            nextCh();
-            return new TokenInfo(REM, line);
+        	nextCh();
+        	if (ch == '=') {
+        		nextCh();
+        		return new TokenInfo(REM_ASSIGN, line);
+        	} else {
+        		return new TokenInfo(REM, line);
+        	}
+        case '?':
+        	nextCh();
+        	return new TokenInfo(Q_MARK, line);
+        case '~':
+        	nextCh();
+        	return new TokenInfo(UCOMP, line);
         case '+':
             nextCh();
             if (ch == '=') {
@@ -191,24 +230,15 @@ class Scanner {
             } else if (ch == '+') {
                 nextCh();
                 return new TokenInfo(INC, line);
-            } else if (isDigit(ch)) {
-            	if(ch == '0') {
-            		nextCh();
-                    return new TokenInfo(INT_LITERAL, "0", line);
-            	} else {
-            		buffer = new StringBuffer();
-            		while (isDigit(ch)) {
-            			buffer.append(ch);
-            			nextCh();
-            		}
-            		return new TokenInfo(INT_LITERAL, buffer.toString(), line);
-            	}
             } else {
                 return new TokenInfo(PLUS, line);
             }
         case '-':
             nextCh();
-            if (ch == '-') {
+            if (ch == '=') {
+                nextCh();
+                return new TokenInfo(MINUS_ASSIGN, line);
+            } else if (ch == '-') {
                 nextCh();
                 return new TokenInfo(DEC, line);
             } else {
@@ -219,23 +249,55 @@ class Scanner {
             if (ch == '&') {
                 nextCh();
                 return new TokenInfo(LAND, line);
+            } else if(ch == '=') {
+                nextCh();
+                return new TokenInfo(AND_ASSIGN, line);
             } else {
-                reportScannerError("Operator & is not supported in j--.");
-                return getNextToken();
+            	return new TokenInfo(AND, line);
             }
         case '>':
             nextCh();
-            if (ch == '>') {
+            if(ch == '=') {
+            	nextCh();
+            	return new TokenInfo(GE, line);
+            } else if (ch == '>') {
                 nextCh();
-                if (ch == '>') {
+                if (ch == '=') {
                 	nextCh();
-                	return new TokenInfo(LRSHIFT, line);
+                	return new TokenInfo(ARSHIFT_ASN, line);
+                } else if (ch == '>') {
+                	nextCh();
+                	if(ch == '=') {
+                		nextCh();
+                		return new TokenInfo(LRSHIFT_ASN, line);
+                	} else {
+                		return new TokenInfo(LRSHIFT, line);
+                	}
                 } else {
                 	return new TokenInfo(ARSHIFT, line);
                 }
             } else {
                 return new TokenInfo(GT, line);
             }
+        case '^':
+        	nextCh();
+        	if(ch == '=') {
+        		nextCh();
+        		return new TokenInfo(EOR_ASSIGN, line);
+        	} else {
+        		return new TokenInfo(EOR, line);
+        	}
+        case '|':
+        	nextCh();
+        	if(ch == '|') {
+        		nextCh();
+        		return new TokenInfo(LOR, line);
+        	} else if(ch == '=') {
+        		nextCh();
+        		return new TokenInfo(IOR_ASSIGN, line);
+        	} else {
+        		return new TokenInfo(IOR, line);
+        	}
         case '<':
             nextCh();
             if (ch == '=') {
@@ -243,10 +305,14 @@ class Scanner {
                 return new TokenInfo(LE, line);
             } else if (ch == '<') {
             	nextCh();
-            	return new TokenInfo(ALSHIFT, line);
+            	if(ch == '=') {
+            		nextCh();
+            		return new TokenInfo(ALSHIFT_ASN, line);
+            	} else {
+            		return new TokenInfo(ALSHIFT, line);
+            	}
             } else {
-                reportScannerError("Operator < is not supported in j--.");
-                return getNextToken();
+            	return new TokenInfo(LT, line);
             }
         case '\'':
             buffer = new StringBuffer();

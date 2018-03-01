@@ -16,10 +16,19 @@ enum TokenKind {
             "import"), INSTANCEOF("instanceof"), INT("int"), NEW("new"), NULL(
             "null"), PACKAGE("package"), PRIVATE("private"), PROTECTED(
             "protected"), PUBLIC("public"), RETURN("return"), STATIC("static"), SUPER(
-            "super"), THIS("this"), TRUE("true"), VOID("void"), WHILE("while"), PLUS(
-            "+"), ASSIGN("="), DEC("--"), EQUAL("=="), GT(">"), INC("++"), LAND(
-            "&&"), LE("<="), LNOT("!"), MINUS("-"), PLUS_ASSIGN("+="), STAR("*"),
-    		DIV("/"), REM("%"), ARSHIFT(">>"), ALSHIFT("<<"), LRSHIFT(">>>"),
+            "super"), THIS("this"), TRUE("true"), VOID("void"), WHILE("while"), BREAK("break"),
+			BYTE("byte"),CASE("case"),CATCH("catch"),CONST("const"),CONTINUE("continue"),
+			DEFAULT("default"),DO("do"),DOUBLE("double"),FINAL("final"),FINALLY("finally"),
+			FLOAT("float"),FOR("for"),GOTO("goto"),IMPLEMENTS("IMPLEMENTS"),INTERFACE("interface"),
+			LONG("long"),NATIVE("native"),SHORT("short"),STRICTFP("strictfp"),SWITCH("switch"),
+			SYNCHRONIZED("synchronized"),THROW("throw"),THROWS("throws"),TRANSIENT("transient"),
+			TRY("try"),VOLATILE("volatile"),PLUS("+"), ASSIGN("="), DEC("--"), EQUAL("=="), 
+			GT(">"), INC("++"), LAND("&&"), LE("<="), LNOT("!"), MINUS("-"), PLUS_ASSIGN("+="), STAR("*"),
+    		DIV("/"), REM("%"), ARSHIFT(">>"), ALSHIFT("<<"), LRSHIFT(">>>"),Q_MARK("?"),UCOMP("~"),
+    		NOT_EQUAL("!="),DIV_ASSIGN("/="),MINUS_ASSIGN("-="),STAR_ASSIGN("*="),REM_ASSIGN("%="),
+    		ARSHIFT_ASN(">>="),LRSHIFT_ASN(">>>="),ALSHIFT_ASN("<<="),GE(">="),LT("<"),EOR("^"),
+    		EOR_ASSIGN("^="),IOR("|"),IOR_ASSIGN("|="),LOR("||"),AND("&"),AND_ASSIGN("&="),
+    		COLON(":"),
     		LPAREN("("), RPAREN(")"), LCURLY("{"), RCURLY("}"), LBRACK("["), RBRACK(
             "]"), SEMI(";"), COMMA(","), DOT("."), IDENTIFIER("<IDENTIFIER>"), INT_LITERAL(
             "<INT_LITERAL>"), CHAR_LITERAL("<CHAR_LITERAL>"), STRING_LITERAL(
