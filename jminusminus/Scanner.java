@@ -80,7 +80,33 @@ class Scanner {
         reserved.put(TRUE.image(), TRUE);
         reserved.put(VOID.image(), VOID);
         reserved.put(WHILE.image(), WHILE);
-
+        reserved.put(BREAK.image(), BREAK);
+        reserved.put(BYTE.image(), BYTE);
+        reserved.put(CATCH.image(), CATCH);
+        reserved.put(CONST.image(), CONST);
+        reserved.put(CONTINUE.image(), CONTINUE);
+        reserved.put(DEFAULT.image(), DEFAULT);
+        reserved.put(DO.image(), DO);
+        reserved.put(DOUBLE.image(), DOBULE);
+        reserved.put(FINAL.image(), FINAL);
+        reserved.put(FINALY.image(), FINALY);
+        reserved.put(FLOAT.image(), FLOAT);
+        reserved.put(FOR.image(), FOR);
+        reserved.put(GOTO.image(), GOTO);
+        reserved.put(IMPLEMENTS.image(), IMPLEMENTS);
+        reserved.put(INTERFACE.image(), INTERFACE);
+        reserved.put(LONG.image(), LONG);
+        reserved.put(NATIVE.image(), NATIVE);
+        reserved.put(SHORT.image(), SHORT);
+        reserved.put(STRICTFP.image(), STRICTFP);
+        reserved.put(SWITCH.image(), SWITCH);
+        reserved.put(SYNCHRONIZED.image(), SYNCHRONIZED);
+        reserved.put(THROW.image(), THROW);
+        reserved.put(THROWS.image(), THROWS);
+        reserved.put(TRANSIENT.image(), TRANSIENT);
+        reserved.put(TRY.image(), TRY);
+        reserved.put(VOLATILE.image(), VOLATILE);
+        
         // Prime the pump.
         nextCh();
     }
