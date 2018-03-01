@@ -3,8 +3,6 @@ https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 
 --> STEP 0
 /// TODO
-	Unary plus operator
-	
 	
 /// DONE 
 	Remainder
@@ -16,6 +14,8 @@ https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 	Exclusive OR ^
 	AND &
 	Unary Complement, ~
+	Unary plus operator
+	
 
 --> STEP 1
 /// TODO	
