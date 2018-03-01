@@ -7,7 +7,7 @@ https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 	Inclusive OR |
 	Exclusive OR ^
 	AND &
-	Unary plus operator
+
 	
 /// DONE 
 	Remainder
@@ -15,6 +15,7 @@ https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 	Shift Arithmetic Right	
 	Shift Arithmetic Right
 	Shift Logical Right
+	Unary plus operator
 
 --> STEP 1
 /// TODO	
