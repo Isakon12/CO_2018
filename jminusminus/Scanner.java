@@ -168,6 +168,18 @@ class Scanner {
             } else if (ch == '+') {
                 nextCh();
                 return new TokenInfo(INC, line);
+            } else if (isDigit(ch)) {
+            	if(ch == '0') {
+            		nextCh();
+                    return new TokenInfo(INT_LITERAL, "0", line);
+            	} else {
+            		buffer = new StringBuffer();
+            		while (isDigit(ch)) {
+            			buffer.append(ch);
+            			nextCh();
+            		}
+            		return new TokenInfo(INT_LITERAL, buffer.toString(), line);
+            	}
             } else {
                 return new TokenInfo(PLUS, line);
             }
