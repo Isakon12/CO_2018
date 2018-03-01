@@ -7,7 +7,8 @@ https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 	Inclusive OR |
 	Exclusive OR ^
 	AND &
-
+	Unary plus operator
+	
 	
 /// DONE 
 	Remainder
@@ -15,18 +16,21 @@ https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 	Shift Arithmetic Right	
 	Shift Arithmetic Right
 	Shift Logical Right
-	Unary plus operator
 
 --> STEP 1
 /// TODO	
+	Literals
+	-(Unary)
+	GRAMMMAR
+	
+/// DONE	
 	Multi-line comments
 	Break Byte Case Catch Const Continue Default Do Double Final Finally
 	Float For Goto Implements Interface Long Native Short Strictfp
 	Switch Synchronized Throw Throws Transient Try Volatile
-	? != /= -= - *= >>= >>>= <<= < >= %= ^= |= &= ||
+	? != /= -= *= >>= >>>= <<= < >= %= ^= |= &= ||
 	:
 	
-/// DONE	
 	
 --> STEP 2
 /// TODO
