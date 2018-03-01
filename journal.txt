@@ -22,7 +22,7 @@ https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 	Break Byte Catch Const Continue Default Do Double Final Finally
 	Float For Goto Implements Interface Long Native Short Strictfp
 	Switch Synchronized Throw Throws Transient Try Volatile
-	? != /= -= - *= >>= >>>= <<= >= ^= |= &= ||
+	? != /= -= - *= >>= >>>= <<= < >= %= ^= |= &= ||
 	:
 	
 /// DONE	
