@@ -4,8 +4,6 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 
 --> STEP 0
 /// TODO
-	Unary plus operator
-	
 	
 /// DONE 
 	Remainder
@@ -17,6 +15,8 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 	Exclusive OR ^
 	AND &
 	Unary Complement, ~
+	Unary plus operator
+	
 
 --> STEP 1
 /// TODO	
@@ -34,6 +34,13 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 	
 --> STEP 2
 /// TODO
+	Double
+	|| -= *= /= %= prefix-- postfix++
+	static instance
+	interface
+	cond expresions
+	for foreach
+	exceptions
 
 --> STEP 3
 /// TODO

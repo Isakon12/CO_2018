@@ -92,7 +92,7 @@ relationalExpression ::= shiftExpresion       // level 5
                            | INSTANCEOF referenceType]
                            
 shiftExpresion :: = additiveExpresion 			// level 4
-							[(>> | << | >>>)] additiveExpresion                           
+							[(ARSHIFT | ALSHIFT | RSHIFT)] additiveExpresion                           
 
 additiveExpression ::= multiplicativeExpression // level 3
                          {(PLUS | MINUS) multiplicativeExpression}
@@ -100,7 +100,7 @@ additiveExpression ::= multiplicativeExpression // level 3
 multiplicativeExpression ::= unaryExpression       // level 2
                                {(STAR | DIV | REM) unaryExpression}
 
-unaryExpression ::= (INC | UCOMP | MINUS) unaryExpression  // level 1
+unaryExpression ::= (INC | UCOMP | MINUS | PLUS) unaryExpression  // level 1
                   | simpleUnaryExpression
 
 simpleUnaryExpression ::= LNOT unaryExpression
