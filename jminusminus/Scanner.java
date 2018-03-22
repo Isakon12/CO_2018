@@ -370,7 +370,18 @@ class Scanner {
         case '0':
             // Handle only simple decimal integers for now.
             nextCh();
-            return new TokenInfo(INT_LITERAL, "0", line);
+            if(ch == 'l' || ch == 'L') {
+            	nextCh();
+            	return new TokenInfo(LONG_LITERAL, "0l", line);
+            } else if (ch == 'd' || ch == 'D') { 
+            	nextCh();
+        		return new TokenInfo(DOUBLE_LITERAL, "0d", line);
+        	} else if (ch == 'f' || ch == 'F') { 
+            	nextCh();
+        		return new TokenInfo(FLOAT_LITERAL, "0f", line);
+        	} else {
+            	return new TokenInfo(INT_LITERAL, "0", line);
+            }
         case '1':
         case '2':
         case '3':
@@ -385,7 +396,87 @@ class Scanner {
                 buffer.append(ch);
                 nextCh();
             }
-            return new TokenInfo(INT_LITERAL, buffer.toString(), line);
+            if(ch=='l' || ch=='L') {
+            	buffer.append('l');
+            	nextCh();
+            	return new TokenInfo(LONG_LITERAL, buffer.toString(), line);
+            } else if (ch=='d' || ch=='D') {
+            	buffer.append('d');
+            	nextCh();
+            	return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
+            } else if (ch=='e' || ch=='E') {
+            	//exponential part for double
+            	buffer.append('e');
+            	nextCh();
+            	//to the power of minus something
+            	if(ch == '-') {
+            		buffer.append('-');
+                	nextCh();
+            	}
+            	//must be followed by number
+            	if(isDigit(ch)) {
+            		buffer.append(ch);
+            		nextCh();
+            		while (isDigit(ch)) {
+            			buffer.append(ch);
+            			nextCh();
+            		}
+            		//can be followed by d or D
+            		if(ch== 'd' || ch == 'D') {
+            			buffer.append('d');
+            			nextCh();
+            		}
+            		return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
+            	}
+            } else if (ch=='.') {
+            	buffer.append('.');
+            	nextCh();
+            	if(isDigit(ch)) {
+            		buffer.append(ch);
+            		nextCh();
+            		while (isDigit(ch)) {
+            			buffer.append(ch);
+            			nextCh();
+            		}
+            		
+            		if (ch=='e' || ch=='E') {
+                    	//exponential part for double
+                    	buffer.append('e');
+                    	nextCh();
+                    	//to the power of minus something
+                    	if(ch == '-') {
+                    		buffer.append('-');
+                        	nextCh();
+                    	}
+                    	//must be followed by number
+                    	if(isDigit(ch)) {
+                    		buffer.append(ch);
+                    		nextCh();
+                    		while (isDigit(ch)) {
+                    			buffer.append(ch);
+                    			nextCh();
+                    		}
+                    		
+                    		//can be followed by d or D
+                    		if(ch== 'd' || ch == 'D') {
+                    			buffer.append('d');
+                    			nextCh();
+                    		}
+                    		return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
+                    	}
+                    } else {
+                    	
+                    //can be followed by d or D
+            		if(ch== 'd' || ch == 'D') {
+            			buffer.append('d');
+            			nextCh();
+            		}
+            		return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
+                    }
+            	}
+            } else {
+            	return new TokenInfo(INT_LITERAL, buffer.toString(), line);
+            }
         default:
             if (isIdentifierStart(ch)) {
                 buffer = new StringBuffer();
