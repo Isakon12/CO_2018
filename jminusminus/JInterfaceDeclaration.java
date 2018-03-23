@@ -23,8 +23,8 @@ class JInterfaceDeclaration extends JAST implements JTypeDecl {
     /** Interface block. */
     private ArrayList<JMember> interfaceBlock;
 
-    /** Super class type. */
-    private Type superType;
+    /** Super interface types. */
+    private ArrayList<Type> superInterfaces;
 
     /** This interface type. */
     private Type thisType;
@@ -59,11 +59,11 @@ class JInterfaceDeclaration extends JAST implements JTypeDecl {
      */
 
     public JInterfaceDeclaration(int line, ArrayList<String> mods, String name,
-            Type superType, ArrayList<JMember> interfaceBlock) {
+    		ArrayList<Type> superInterfaces, ArrayList<JMember> interfaceBlock) {
         super(line);
         this.mods = mods;
         this.name = name;
-        this.superType = superType;
+        this.superInterfaces = superInterfaces;
         this.interfaceBlock = interfaceBlock;
         hasExplicitConstructor = false;
         instanceFieldInitializations = new ArrayList<JFieldDeclaration>();
@@ -78,16 +78,6 @@ class JInterfaceDeclaration extends JAST implements JTypeDecl {
 
     public String name() {
         return name;
-    }
-
-    /**
-     * Return the interface' super interface type.
-     * 
-     * @return the super interface type.
-     */
-
-    public Type superType() {
-        return superType;
     }
 
     /**
@@ -167,8 +157,17 @@ class JInterfaceDeclaration extends JAST implements JTypeDecl {
      */
 
     public void writeToStdOut(PrettyPrinter p) {
+    	String interfaces = "";
+    	if(superInterfaces.isEmpty()) {
+    		interfaces = "null";
+    	} else {
+    		for(Type t : superInterfaces)
+    			interfaces = interfaces + t.toString() + ",";
+    		interfaces = interfaces.substring(0, interfaces.length() - 1);
+    	}
+    	
         p.printf("<JInterfaceDeclaration line=\"%d\" name=\"%s\""
-                + " super=\"%s\">\n", line(), name, superType.toString());
+                + " super=\"%s\">\n", line(), name, interfaces);
         p.indentRight();
         if (context != null) {
             context.writeToStdOut(p);

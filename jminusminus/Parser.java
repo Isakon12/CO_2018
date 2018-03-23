@@ -401,11 +401,10 @@ public class Parser {
 
     private JAST typeDeclaration() {
         ArrayList<String> mods = modifiers();
-        if(have(CLASS)) {
-        	
-        return classDeclaration(mods);
-        }else {
-        return interfaceDeclaration(mods);
+        if(see(CLASS)) {
+            return classDeclaration(mods);
+        } else {
+            return interfaceDeclaration(mods);
         }
     }
 
@@ -476,6 +475,36 @@ public class Parser {
             }
         return mods;
     }
+    
+    /**
+     * Parse a interface declaration.
+     * 
+     * <pre>
+     *   interfaceDeclaration ::= INTERFACE IDENTIFIER 
+     *                        [EXTENDS qualifiedIdentifier {, qualifiedIdentifier}] 
+     *                        interfaceBody
+     * </pre>
+     * 
+     * @param mods
+     *            the interface modifiers.
+     * @return an AST for a interfaceDeclaration.
+     */
+
+    
+    private JInterfaceDeclaration interfaceDeclaration(ArrayList<String> mods) {
+        int line = scanner.token().line();
+        mustBe(INTERFACE);
+        mustBe(IDENTIFIER);
+        String name = scanner.previousToken().image();
+        ArrayList<Type> superInterfaces = new ArrayList<Type>();
+        if (have(EXTENDS)) {
+        	do {
+    	    	superInterfaces.add(qualifiedIdentifier());
+        	} while(have(COMMA));
+        }
+        return new JInterfaceDeclaration(line, mods, name, superInterfaces, interfaceBody());
+    }
+
 
     /**
      * Parse a class declaration.
@@ -483,6 +512,7 @@ public class Parser {
      * <pre>
      *   classDeclaration ::= CLASS IDENTIFIER 
      *                        [EXTENDS qualifiedIdentifier] 
+     *                        [IMPLEMENTS qualifiedIdentifier {, qualifiedIdentifier}]
      *                        classBody
      * </pre>
      * 
@@ -500,43 +530,19 @@ public class Parser {
         mustBe(IDENTIFIER);
         String name = scanner.previousToken().image();
         Type superClass;
+        ArrayList<Type> superInterfaces = new ArrayList<Type>();
         if (have(EXTENDS)) {
             superClass = qualifiedIdentifier();
         } else {
             superClass = Type.OBJECT;
         }
-        return new JClassDeclaration(line, mods, name, superClass, classBody());
-    }
-    
-    /**
-     * Parse a interface declaration.
-     * 
-     * <pre>
-     *   interfaceDeclaration ::= INTERFACE IDENTIFIER 
-     *                        [EXTENDS qualifiedIdentifier] 
-     *                        interfaceBody
-     * </pre>
-     * 
-     * @param mods
-     *            the interface modifiers.
-     * @return an AST for a interfaceDeclaration.
-     */
-
-    
-    private JInterfaceDeclaration interfaceDeclaration(ArrayList<String> mods) {
-        int line = scanner.token().line();
-        mustBe(INTERFACE);
-        mustBe(IDENTIFIER);
-        String name = scanner.previousToken().image();
-        Type superInterface;
-        if (have(EXTENDS)) {
-            superInterface = qualifiedIdentifier();
-        } else {
-        	superInterface = null;
+        if(have(IMPLEMENTS)) {
+        	do {
+    	    	superInterfaces.add(qualifiedIdentifier());
+        	} while(have(COMMA));
         }
-        return new JInterfaceDeclaration(line, mods, name, superInterface, interfaceBody());
-    }
-    
+        return new JClassDeclaration(line, mods, name, superClass, classBody(),superInterfaces);
+    }    
     
     /**
      * Parse a interface body.
@@ -600,36 +606,36 @@ public class Parser {
     private JMember intMemberDecl(ArrayList<String> mods) {
         int line = scanner.token().line();
         JMember intMemberDecl = null;
-            Type type = null;
+        Type type = null;
             
-            if (have(VOID)) {
-                // void method
-                type = Type.VOID;
+        if (have(VOID)) {
+        	// void method
+            type = Type.VOID;
+            mustBe(IDENTIFIER);
+            String name = scanner.previousToken().image();
+            ArrayList<JFormalParameter> params = formalParameters();
+            mustBe(SEMI);
+            intMemberDecl = new JMethodDeclaration(line, mods, name, type,
+                        params, null);
+        } else {
+        	type = type();
+            if (seeIdentLParen()) {
+            	// Non void method
                 mustBe(IDENTIFIER);
                 String name = scanner.previousToken().image();
                 ArrayList<JFormalParameter> params = formalParameters();
                 mustBe(SEMI);
                 intMemberDecl = new JMethodDeclaration(line, mods, name, type,
-                        params, null);
-            } else {
-                type = type();
-                if (seeIdentLParen()) {
-                    // Non void method
-                    mustBe(IDENTIFIER);
-                    String name = scanner.previousToken().image();
-                    ArrayList<JFormalParameter> params = formalParameters();
-                    mustBe(SEMI);
-                    intMemberDecl = new JMethodDeclaration(line, mods, name, type,
                             params, null);
-                } else {
-                    // Field
-                	intMemberDecl = new JFieldDeclaration(line, mods,
-                            variableDeclarators(type));
-                    mustBe(SEMI);
-                }
+            } else {
+            	// Field
+                intMemberDecl = new JFieldDeclaration(line, mods,
+                        variableDeclarators(type));
+                mustBe(SEMI);
             }
-        return intMemberDecl;
-    }
+        }
+    return intMemberDecl;
+}
 
 
     /**

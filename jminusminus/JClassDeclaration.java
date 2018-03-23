@@ -28,6 +28,9 @@ class JClassDeclaration extends JAST implements JTypeDecl {
 
     /** This class type. */
     private Type thisType;
+    
+    /** Super interface types. */
+    private ArrayList<Type> superInterfaces;
 
     /** Context for this class. */
     private ClassContext context;
@@ -59,12 +62,13 @@ class JClassDeclaration extends JAST implements JTypeDecl {
      */
 
     public JClassDeclaration(int line, ArrayList<String> mods, String name,
-            Type superType, ArrayList<JMember> classBlock) {
+            Type superType, ArrayList<JMember> classBlock, ArrayList<Type> superInterfaces) {
         super(line);
         this.mods = mods;
         this.name = name;
         this.superType = superType;
         this.classBlock = classBlock;
+        this.superInterfaces = superInterfaces;
         hasExplicitConstructor = false;
         instanceFieldInitializations = new ArrayList<JFieldDeclaration>();
         staticFieldInitializations = new ArrayList<JFieldDeclaration>();
@@ -263,8 +267,17 @@ class JClassDeclaration extends JAST implements JTypeDecl {
      */
 
     public void writeToStdOut(PrettyPrinter p) {
+    	String interfaces = "";
+    	if(superInterfaces.isEmpty()) {
+    		interfaces = "null";
+    	} else {
+    		for(Type t : superInterfaces)
+    			interfaces = interfaces + t.toString() + ",";
+    		interfaces = interfaces.substring(0, interfaces.length() - 1);
+    	}
+    	
         p.printf("<JClassDeclaration line=\"%d\" name=\"%s\""
-                + " super=\"%s\">\n", line(), name, superType.toString());
+                + " super=\"%s\" implements=\"%s\">\n", line(), name, superType.toString(),interfaces);
         p.indentRight();
         if (context != null) {
             context.writeToStdOut(p);

@@ -12,7 +12,7 @@ typeDeclaration ::= modifiers (classDeclaration | interfaceDeclaration)
 modifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | ABSTRACT}
 
 interfaceDeclaration ::= INTERFACE IDENTIFIER
-                       [EXTENDS qualifiedIdentifier] 
+                       [EXTENDS qualifiedIdentifier {, qualifiedIdentifier}] 
                        interfaceBody
                        
 interfaceBody ::= LCURLY {modifiers intMemberDecl} RCURLY
@@ -23,7 +23,7 @@ IntMemberDecl ::=  (VOID | type) IDENTIFIER  // method
 
 classDeclaration ::= CLASS IDENTIFIER 
                        [EXTENDS qualifiedIdentifier] 
-                       [IMPLEMENTS qualifiedIdentifier]
+                       [IMPLEMENTS qualifiedIdentifier {, qualifiedIdentifier}]
                        classBody
 
 classBody ::= LCURLY {modifiers memberDecl} RCURLY

@@ -38,14 +38,6 @@ interface JTypeDecl {
     public String name();
 
     /**
-     * Return the super class' type.
-     * 
-     * @return the super class' type.
-     */
-
-    public Type superType();
-
-    /**
      * Return the type that this type declaration defines.
      * 
      * @return the type defined by this type declaration.

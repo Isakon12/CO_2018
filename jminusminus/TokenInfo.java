@@ -19,7 +19,7 @@ enum TokenKind {
             "super"), THIS("this"), TRUE("true"), VOID("void"), WHILE("while"), BREAK("break"),
 			BYTE("byte"),CASE("case"),CATCH("catch"),CONST("const"),CONTINUE("continue"),
 			DEFAULT("default"),DO("do"),DOUBLE("double"),FINAL("final"),FINALLY("finally"),
-			FLOAT("float"),FOR("for"),GOTO("goto"),IMPLEMENTS("IMPLEMENTS"),INTERFACE("interface"),
+			FLOAT("float"),FOR("for"),GOTO("goto"),IMPLEMENTS("implements"),INTERFACE("interface"),
 			LONG("long"),NATIVE("native"),SHORT("short"),STRICTFP("strictfp"),SWITCH("switch"),
 			SYNCHRONIZED("synchronized"),THROW("throw"),THROWS("throws"),TRANSIENT("transient"),
 			TRY("try"),VOLATILE("volatile"),PLUS("+"), ASSIGN("="), DEC("--"), EQUAL("=="), 
