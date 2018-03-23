@@ -411,7 +411,7 @@ class Scanner {
             nextCh();
         	if (ch == '.') {
         		nextCh();
-        		if(isDigit(Ch)) {
+        		if(isDigit(ch)) {
         			buffer = new StringBuffer();
         			buffer.append(ch);
         			nextCh();
