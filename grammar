@@ -82,7 +82,8 @@ expression ::= assignmentExpression
 
 assignmentExpression ::= logicalOrExpression  // must be a valid lhs
                            [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN 
-                           | DIV_ASSIGN | REM_ASSIGN) assignmentExpression]
+                           | DIV_ASSIGN | REM_ASSIGN | ARSHIFT_ASN | ALSHIFT_ASN
+                           | LRSHIFT_ASN | EOR_ASSIGN | IOR_ASSIGN | AND_ASSIGN) assignmentExpression]
 
 logicalOrExpression ::= conditionalAndExpression // level 11
                                {LOR conditionalAndExpression}
@@ -100,10 +101,10 @@ andExpression ::= equalityExpression // level 7
                                {AND equalityExpression}                               
 
 equalityExpression ::= relationalExpression  // level 6
-                         {EQUAL relationalExpression}
+                         {(EQUAL | NOT_EQUAL) relationalExpression}
 
 relationalExpression ::= shiftExpresion       // level 5
-                           [(GT | LE) shiftExpresion
+                           [(GT | LE | LT | GE) shiftExpresion
                            | INSTANCEOF referenceType]
                            
 shiftExpresion :: = additiveExpresion 			// level 4

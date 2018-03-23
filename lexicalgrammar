@@ -7,6 +7,10 @@
 // Single line comment -- ignored
 "//" {~("\n"|"\r")} ("\n"|"\r"["\n"])
 
+// multi line comment -- ignored
+"/*" (~[])* "*/"
+
+
 // Reserved words
 ABSTRACT    ::= "abstract"
 BOOLEAN     ::= "boolean"
