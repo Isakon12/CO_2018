@@ -149,7 +149,6 @@ class Scanner {
                 	return new TokenInfo(DIV_ASSIGN, line);
                 } else {
                 	return new TokenInfo(DIV, line);
-                    //reportScannerError("Operator / is not supported in j--.");
                 }
             } else {
                 moreWhiteSpace = false;
