@@ -393,7 +393,7 @@ public class Parser {
      * Parse a type declaration.
      * 
      * <pre>
-     *   typeDeclaration ::= modifiers classDeclaration
+     *   typeDeclaration ::= modifiers (classDeclaration | interfaceDeclaration)
      * </pre>
      * 
      * @return an AST for a typeDeclaration.
@@ -401,7 +401,12 @@ public class Parser {
 
     private JAST typeDeclaration() {
         ArrayList<String> mods = modifiers();
+        if(have(CLASS)) {
+        	
         return classDeclaration(mods);
+        }else {
+        return interfaceDeclaration(mods);
+        }
     }
 
     /**
@@ -502,7 +507,60 @@ public class Parser {
         }
         return new JClassDeclaration(line, mods, name, superClass, classBody());
     }
+    
+    /**
+     * Parse a interface declaration.
+     * 
+     * <pre>
+     *   interfaceDeclaration ::= INTERFACE IDENTIFIER 
+     *                        [EXTENDS qualifiedIdentifier] 
+     *                        interfaceBody
+     * </pre>
+     * 
+     * @param mods
+     *            the interface modifiers.
+     * @return an AST for a interfaceDeclaration.
+     */
 
+    
+    private JInterfaceDeclaration interfaceDeclaration(ArrayList<String> mods) {
+        int line = scanner.token().line();
+        mustBe(INTERFACE);
+        mustBe(IDENTIFIER);
+        String name = scanner.previousToken().image();
+        Type superInterface;
+        if (have(EXTENDS)) {
+            superInterface = qualifiedIdentifier();
+        } else {
+        	superInterface = null;
+        }
+        return new JInterfaceDeclaration(line, mods, name, superInterface, interfaceBody());
+    }
+    
+    
+    /**
+     * Parse a interface body.
+     * 
+     * <pre>
+     *   interfaceBody ::= LCURLY
+     *                   {modifiers memberDecl}
+     *                 RCURLY
+     * </pre>
+     * 
+     * @return list of members in the interface body.
+     */
+
+    private ArrayList<JMember> interfaceBody() {
+        ArrayList<JMember> members = new ArrayList<JMember>();
+        mustBe(LCURLY);
+        while (!see(RCURLY) && !see(EOF)) {
+            members.add(intMemberDecl(modifiers()));
+        }
+        mustBe(RCURLY);
+        return members;
+    }
+    
+    
     /**
      * Parse a class body.
      * 
@@ -524,6 +582,55 @@ public class Parser {
         mustBe(RCURLY);
         return members;
     }
+    
+    /**
+     * Parse a member declaration.
+     * 
+     * <pre>
+     * IntMemberDecl ::=  (VOID | type) IDENTIFIER  // method
+     *           formalParameters SEMI
+     *           | type variableDeclarators SEMI // field
+     * </pre>
+     * 
+     * @param mods
+     *            the class member modifiers.
+     * @return an AST for a intMemberDecl.
+     */
+
+    private JMember intMemberDecl(ArrayList<String> mods) {
+        int line = scanner.token().line();
+        JMember intMemberDecl = null;
+            Type type = null;
+            
+            if (have(VOID)) {
+                // void method
+                type = Type.VOID;
+                mustBe(IDENTIFIER);
+                String name = scanner.previousToken().image();
+                ArrayList<JFormalParameter> params = formalParameters();
+                mustBe(SEMI);
+                intMemberDecl = new JMethodDeclaration(line, mods, name, type,
+                        params, null);
+            } else {
+                type = type();
+                if (seeIdentLParen()) {
+                    // Non void method
+                    mustBe(IDENTIFIER);
+                    String name = scanner.previousToken().image();
+                    ArrayList<JFormalParameter> params = formalParameters();
+                    mustBe(SEMI);
+                    intMemberDecl = new JMethodDeclaration(line, mods, name, type,
+                            params, null);
+                } else {
+                    // Field
+                	intMemberDecl = new JFieldDeclaration(line, mods,
+                            variableDeclarators(type));
+                    mustBe(SEMI);
+                }
+            }
+        return intMemberDecl;
+    }
+
 
     /**
      * Parse a member declaration.

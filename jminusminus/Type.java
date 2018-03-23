@@ -171,6 +171,7 @@ class Type {
         return classRep == null || classRep.getSuperclass() == null ? null
                 : typeFor(classRep.getSuperclass());
     }
+  
 
     /**
      * Is this a primitive type?
