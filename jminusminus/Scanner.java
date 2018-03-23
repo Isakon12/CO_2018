@@ -363,21 +363,100 @@ class Scanner {
             return new TokenInfo(STRING_LITERAL, buffer.toString(), line);
         case '.':
             nextCh();
+            //check if token is a decimal number (double)
+            if(isDigit(ch)) {
+            	buffer = new StringBuffer();
+            	buffer.append(ch);
+        		nextCh();
+        		//collect multicharacter number
+        		while (isDigit(ch)) {
+        			buffer.append(ch);
+        			nextCh();
+        		}
+        		//check if decimal has an exponential part
+        		if(ch == 'e' || ch == 'E') {
+        			buffer.append(ch);
+        			nextCh();
+        			//check decimal has exponential then it must be followed by number
+        			if(isDigit(ch)) {
+        				buffer.append(ch);
+                		nextCh();
+                		//collect multicharacter number
+                		while (isDigit(ch)) {
+                			buffer.append(ch);
+                			nextCh();
+                		}
+                		//optinal d|D addition
+                		if(ch == 'd' || ch == 'D') {
+                			buffer.append('d');
+                			nextCh();
+                		}
+                		return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
+        			}
+        		} else {
+        			//optinal d|D addition
+        			if(ch == 'd' || ch == 'D') {
+            			buffer.append('d');
+            			nextCh();
+            		}
+        			return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
+        		}
+            } else {
             return new TokenInfo(DOT, line);
+            }
         case EOFCH:
             return new TokenInfo(EOF, line);
         case '0':
             // Handle only simple decimal integers for now.
             nextCh();
-            if(ch == 'l' || ch == 'L') {
+        	if (ch == '.') {
+        		nextCh();
+        		if(isDigit(ch)) {
+        			buffer = new StringBuffer();
+        			buffer.append(ch);
+        			nextCh();
+        			while (isDigit(ch)) {
+                        buffer.append(ch);
+                        nextCh();
+                    }
+        			//check if decimal has an exponential part
+            		if(ch == 'e' || ch == 'E') {
+            			buffer.append(ch);
+            			nextCh();
+            			//check decimal has exponential then it must be followed by number
+            			if(isDigit(ch)) {
+            				buffer.append(ch);
+                    		nextCh();
+                    		//collect multicharacter number
+                    		while (isDigit(ch)) {
+                    			buffer.append(ch);
+                    			nextCh();
+                    		}
+                    		//optinal d|D addition
+                    		if(ch == 'd' || ch == 'D') {
+                    			buffer.append('d');
+                    			nextCh();
+                    		}
+                    		return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
+            			}
+            		} else {
+            			//optinal d|D addition
+            			if(ch == 'd' || ch == 'D') {
+                			buffer.append('d');
+                			nextCh();
+                		}
+            			return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
+            		}
+        		}
+        	}else if(ch == 'l' || ch == 'L') {
             	nextCh();
-            	return new TokenInfo(LONG_LITERAL, "0l", line);
+            	return new TokenInfo(LONG_LITERAL, "0", line);
             } else if (ch == 'd' || ch == 'D') { 
             	nextCh();
-        		return new TokenInfo(DOUBLE_LITERAL, "0d", line);
+        		return new TokenInfo(DOUBLE_LITERAL, "0", line);
         	} else if (ch == 'f' || ch == 'F') { 
             	nextCh();
-        		return new TokenInfo(FLOAT_LITERAL, "0f", line);
+        		return new TokenInfo(FLOAT_LITERAL, "0", line);
         	} else {
             	return new TokenInfo(INT_LITERAL, "0", line);
             }
