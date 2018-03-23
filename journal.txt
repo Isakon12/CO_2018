@@ -3,8 +3,6 @@ https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.php
 
 --> STEP 0
-/// TODO
-	
 /// DONE 
 	Remainder
 	Division
@@ -20,7 +18,6 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 
 --> STEP 1
 /// TODO	
-	Literals (LexicalGrammar)
 	Grammar
 	
 /// DONE	
@@ -30,11 +27,11 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 	Switch Synchronized Throw Throws Transient Try Volatile
 	? != /= -= *= >>= >>>= <<= < >= %= ^= |= &= ||
 	:
+	Literals
 	
 	
 --> STEP 2
 /// TODO
-	|| -= *= /= %= prefix-- postfix++
 	static instance
 	interface
 	cond expresions
@@ -43,9 +40,29 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 
 /// DONE
 	Double
+	|| -= *= /= %= prefix-- postfix++
 
 --> STEP 3
 /// TODO
+//// SCANNER
+	Multi-line comments
+	Break Byte Case Catch Const Continue Default Do Double Final Finally
+	Float For Goto Implements Interface Long Native Short Strictfp
+	Switch Synchronized Throw Throws Transient Try Volatile
+	? != /= -= *= >>= >>>= <<= < >= %= ^= |= &= ||
+	:
+	Literals
+	
+//// PARSER
+	Double
+	|| -= *= /= %= prefix-- postfix++
+	static instance
+	interface
+	cond expresions
+	for foreach
+	exceptions
+	
+/// DONE
 
 --> STEP 4
 /// TODO

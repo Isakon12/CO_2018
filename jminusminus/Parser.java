@@ -990,7 +990,8 @@ public class Parser {
      *   assignmentExpression ::= 
      *       logicalOrExpression // level 13
      *           [( ASSIGN  // conditionalExpression
-     *            | PLUS_ASSIGN // must be valid lhs
+     *            PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN //Must be a valid lhs
+                  | DIV_ASSIGN | REM_ASSIGN
      *            )
      *            assignmentExpression]
      * </pre>
@@ -1005,6 +1006,14 @@ public class Parser {
             return new JAssignOp(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
             return new JPlusAssignOp(line, lhs, assignmentExpression());
+        } else if (have(MINUS_ASSIGN)) {
+            return new JMinusAssignOp(line, lhs, assignmentExpression());
+        } else if (have(STAR_ASSIGN)) {
+            return new JStarAssignOp(line, lhs, assignmentExpression());
+        } else if (have(DIV_ASSIGN)) {
+            return new JDivAssignOp(line, lhs, assignmentExpression());
+        } else if (have(REM_ASSIGN)) {
+            return new JRemAssignOp(line, lhs, assignmentExpression());
         } else {
             return lhs;
         }
@@ -1281,7 +1290,7 @@ public class Parser {
      * Parse an unary expression.
      * 
      * <pre>
-     *   unaryExpression ::= (INC | MINUS | UCOMP | PLUS) unaryExpression // level 1
+     *   unaryExpression ::= (INC | DEC | MINUS | UCOMP | PLUS) unaryExpression // level 1
      *                     | simpleUnaryExpression
      * </pre>
      * 
@@ -1292,6 +1301,8 @@ public class Parser {
         int line = scanner.token().line();
         if (have(INC)) {
             return new JPreIncrementOp(line, unaryExpression());
+        } else if (have(DEC)) {
+            return new JPreDecrementOp(line, unaryExpression());
         } else if (have(MINUS)) {
             return new JNegateOp(line, unaryExpression());
         } else if (have(PLUS)) {
@@ -1340,7 +1351,7 @@ public class Parser {
      * Parse a postfix expression.
      * 
      * <pre>
-     *   postfixExpression ::= primary {selector} {DEC}
+     *   postfixExpression ::= primary {selector} {(DEC | INC)}
      * </pre>
      * 
      * @return an AST for a postfixExpression.
@@ -1352,8 +1363,11 @@ public class Parser {
         while (see(DOT) || see(LBRACK)) {
             primaryExpr = selector(primaryExpr);
         }
-        while (have(DEC)) {
-            primaryExpr = new JPostDecrementOp(line, primaryExpr);
+        while (have(DEC) || have(INC)) {
+        	if(have(DEC))
+        		primaryExpr = new JPostDecrementOp(line, primaryExpr);
+        	else
+        		primaryExpr = new JPostIncrementOp(line, primaryExpr);
         }
         return primaryExpr;
     }
