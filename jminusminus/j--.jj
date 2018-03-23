@@ -204,18 +204,42 @@ TOKEN:
 // Operators (these could be combined with the reserved words)
 TOKEN:
 {
-  < PLUS: "+" >
-| < ASSIGN: "=" >
-| < DEC: "--" >
-| < EQUAL: "==" >
-| < GT: ">" >
-| < INC: "++" >
-| < LAND: "&&" >
-| < LE: "<=" >
-| < LNOT: "!" >
-| < MINUS: "-" >
-| < PLUS_ASSIGN: "+=" >
-| < STAR: "*" >
+  < PLUS:        "+"   >
+| < ASSIGN:      "="   >
+| < DEC:         "--"  >
+| < EQUAL:       "=="  >
+| < GT:          ">"   >
+| < INC:         "++"  >
+| < LAND:        "&&"  >
+| < LE:          "<="  >
+| < LNOT:        "!"   >
+| < MINUS:       "-"   >
+| < PLUS_ASSIGN: "+="  >
+| < STAR:        "*"   >
+| < DIV:         "/"   >
+| < NOT_EQUAL:   "!="  >
+| < GE:          ">="  >
+| < Q_MARK:      "?"   >
+| < LOR:         "||"  >
+| < LT:          "<"   >
+| < MINUS_ASSIGN:"-="  >
+| < STAR_ASSIGN: "*="  >
+| < DIV_ASSIGN:  "/="  >
+| < REM:         "%"   >
+| < REM_ASSIGN:  "%="  >
+| < ARSHIFT:     ">>"  >
+| < ARSHIFT_ASN: ">>=" >	
+| < ALSHIFT:     "<<"  >
+| < ALSHIFT_ASN: "<<=" >
+| < LRSHIFT:     ">>>" >
+| < LRSHIFT_ASN: ">>>=">
+| < IOR:         "|"   >
+| < IOR_ASSIGN:  "|="  >
+| < EOR:         "^"   >
+| < EOR_ASSIGN:  "^="  >
+| < AND:         "&"   >
+| < AND_ASSIGN:  "&="  >
+| < UCOMP:       "~"   >
 }
 
 // Separators (these could be combined with the reserved words)
