@@ -33,13 +33,15 @@ https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 	
 --> STEP 2
 /// TODO
-	Double
 	|| -= *= /= %= prefix-- postfix++
 	static instance
 	interface
 	cond expresions
 	for foreach
 	exceptions
+
+/// DONE
+	Double
 
 --> STEP 3
 /// TODO
