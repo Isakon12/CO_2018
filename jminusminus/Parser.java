@@ -746,6 +746,7 @@ public class Parser {
      *   statement ::= block
      *               | IF parExpression statement [ELSE statement]
      *               | WHILE parExpression statement 
+     *    			 | FOR forLoop
      *               | RETURN [expression] SEMI
      *               | SEMI 
      *               | statementExpression SEMI
@@ -767,6 +768,8 @@ public class Parser {
             JExpression test = parExpression();
             JStatement statement = statement();
             return new JWhileStatement(line, test, statement);
+        } else if (have(FOR)) {
+        	return forLoop();
         } else if (have(RETURN)) {
             if (have(SEMI)) {
                 return new JReturnStatement(line, null);
@@ -842,6 +845,31 @@ public class Parser {
         JExpression expr = expression();
         mustBe(RPAREN);
         return expr;
+    }
+    
+    /**
+     * Parse a for loop.
+     * 
+     * <pre>
+     *   forLoop ::= LPAREN (type variableDeclarator SEMI expression SEMI expression |
+ type IDENTIFIER COLON IDENTIFIER) RPAREN statement
+     * </pre>
+     * 
+     * @return an AST for a for loop.
+     */
+
+    private JForStatement forLoop() {
+        int line = scanner.token().line();
+    	mustBe(LPAREN);
+    	Type init_type = type();
+    	JVariableDeclarator init = variableDeclarator(init_type);
+        mustBe(SEMI);
+        JExpression test = expression();
+        mustBe(SEMI);
+        JExpression incr = expression();
+        mustBe(RPAREN);
+        JStatement statement = statement();
+        return new JForStatement(line, init, test, incr, statement);
     }
 
     /**
