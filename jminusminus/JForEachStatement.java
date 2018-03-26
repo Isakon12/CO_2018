@@ -74,7 +74,6 @@ class JForEachStatement extends JStatement {
         init.writeToStdOut(p);
         identifier.writeToStdOut(p);
         p.indentLeft();
-        p.printf("</IncrementExpression>\n");
         p.printf("<Body>\n");
         p.indentRight();
         body.writeToStdOut(p);
