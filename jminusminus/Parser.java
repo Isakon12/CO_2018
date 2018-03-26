@@ -858,11 +858,20 @@ public class Parser {
      * @return an AST for a for loop.
      */
 
-    private JForStatement forLoop() {
+    private JStatement forLoop() {
         int line = scanner.token().line();
     	mustBe(LPAREN);
     	Type init_type = type();
     	JVariableDeclarator init = variableDeclarator(init_type);
+    	if(init.initializer() == null && have(COLON)) {
+    		String identifier = scanner.token().image();
+            TypeName id = new TypeName(line, identifier);
+            JVariable var = new JVariable(line, id.simpleName());
+            scanner.next();
+            mustBe(RPAREN);
+            JStatement statement = statement();
+            return new JForEachStatement(line, init, var, statement);
+    	}
         mustBe(SEMI);
         JExpression test = expression();
         mustBe(SEMI);

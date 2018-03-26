@@ -34,14 +34,13 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 /// TODO
 	static instance
 	cond expresions
-	foreach
 	exceptions
 
 /// DONE
 	Double
 	|| -= *= /= %= prefix-- postfix++
 	interface
-	for
+	for foreach
 
 --> STEP 3
 /// TODO
@@ -67,6 +66,21 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 
 --> STEP 4
 /// TODO
+	double
+	|| -= *= /= %= prefix-- postfix++
+	interface
+	static instance
+	cond expresions
+	for foreach
+	exceptions
 
 --> STEP 5
 /// TODO
+	double
+	|| -= *= /= %= prefix-- postfix++
+	interface
+	static instance
+	cond expresions
+	for foreach
+	exceptions
+	
