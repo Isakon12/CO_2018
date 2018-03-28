@@ -82,7 +82,6 @@ class Scanner {
         reserved.put(WHILE.image(), WHILE);
         reserved.put(BREAK.image(), BREAK);
         reserved.put(BYTE.image(), BYTE);
-        reserved.put(CASE.image(), CASE);
         reserved.put(CATCH.image(), CATCH);
         reserved.put(CONST.image(), CONST);
         reserved.put(CONTINUE.image(), CONTINUE);
@@ -367,7 +366,6 @@ class Scanner {
             //check if token is a decimal number (double)
             if(isDigit(ch)) {
             	buffer = new StringBuffer();
-            	buffer.append('.');
             	//collect multicharacter number
         		while (isDigit(ch)) {
         			buffer.append(ch);
@@ -390,7 +388,7 @@ class Scanner {
                 			nextCh();
                 			return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
                 		} else if (ch == 'f' || ch == 'F'){
-                			buffer.append('f');
+                			buffer.append('d');
                 			nextCh();
                 			return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line);
                 		} else {
@@ -404,7 +402,7 @@ class Scanner {
             			nextCh();
             			return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
             		} else if (ch == 'f' || ch == 'F'){
-            			buffer.append('f');
+            			buffer.append('d');
             			nextCh();
             			return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line);
             		} else {
@@ -455,7 +453,7 @@ class Scanner {
                 			nextCh();
                 			return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
                 		} else if (ch == 'f' || ch == 'F'){
-                			buffer.append('f');
+                			buffer.append('d');
                 			nextCh();
                 			return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line);
                 		} else {
@@ -471,7 +469,7 @@ class Scanner {
             			nextCh();
             			return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
             		} else if (ch == 'f' || ch == 'F'){
-            			buffer.append('f');
+            			buffer.append('d');
             			nextCh();
             			return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line);
             		} else {
@@ -480,7 +478,7 @@ class Scanner {
             	}
         	} else if(ch == 'l' || ch == 'L') {
             	nextCh();
-            	return new TokenInfo(LONG_LITERAL, "0l", line);
+            	return new TokenInfo(LONG_LITERAL, "0", line);
             } else if (ch=='e' || ch=='E') {
             	buffer = new StringBuffer();
         		buffer.append('0');
@@ -504,7 +502,7 @@ class Scanner {
             			nextCh();
             			return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
             		} else if (ch == 'f' || ch == 'F'){
-            			buffer.append('f');
+            			buffer.append('d');
             			nextCh();
             			return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line);
             		} else {
@@ -513,10 +511,10 @@ class Scanner {
             	}
             } else if (ch == 'd' || ch == 'D') { 
             	nextCh();
-        		return new TokenInfo(DOUBLE_LITERAL, "0d", line);
+        		return new TokenInfo(DOUBLE_LITERAL, "0", line);
         	} else if (ch == 'f' || ch == 'F') { 
             	nextCh();
-        		return new TokenInfo(FLOAT_LITERAL, "0f", line);
+        		return new TokenInfo(FLOAT_LITERAL, "0", line);
         	} else {
             	return new TokenInfo(INT_LITERAL, "0", line);
             }
@@ -563,7 +561,7 @@ class Scanner {
             			nextCh();
             			return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
             		} else if (ch == 'f' || ch == 'F'){
-            			buffer.append('f');
+            			buffer.append('d');
             			nextCh();
             			return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line);
             		} else {
@@ -604,7 +602,7 @@ class Scanner {
                 			nextCh();
                 			return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
                 		} else if (ch == 'f' || ch == 'F'){
-                			buffer.append('f');
+                			buffer.append('d');
                 			nextCh();
                 			return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line);
                 		} else {
@@ -620,7 +618,7 @@ class Scanner {
             			nextCh();
             			return new TokenInfo(DOUBLE_LITERAL, buffer.toString(), line);
             		} else if (ch == 'f' || ch == 'F'){
-            			buffer.append('f');
+            			buffer.append('d');
             			nextCh();
             			return new TokenInfo(FLOAT_LITERAL, buffer.toString(), line);
             		} else {
