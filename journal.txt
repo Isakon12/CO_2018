@@ -33,7 +33,6 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 --> STEP 2
 /// TODO
 	static instance
-	cond expresions
 	exceptions
 
 /// DONE
@@ -41,6 +40,8 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 	|| -= *= /= %= prefix-- postfix++
 	interface
 	for foreach
+	cond expresions
+	
 
 --> STEP 3
 /// TODO
@@ -66,11 +67,11 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 
 --> STEP 4
 /// TODO
-	double
+	double (all operators)
 	|| -= *= /= %= prefix-- postfix++
-	interface
+	interface (and class declaration)
 	static instance
-	cond expresions
+	cond expresions (type left equal to result types, boolean type in cond)
 	for foreach
 	exceptions
 

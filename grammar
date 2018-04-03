@@ -84,10 +84,14 @@ statementExpression ::= expression // but must have side-effect, eg i++
 
 expression ::= assignmentExpression
 
-assignmentExpression ::= logicalOrExpression  // must be a valid lhs
+assignmentExpression ::= ternaryExpression  // must be a valid lhs level 13
                            [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN 
                            | DIV_ASSIGN | REM_ASSIGN | ARSHIFT_ASN | ALSHIFT_ASN
-                           | LRSHIFT_ASN | EOR_ASSIGN | IOR_ASSIGN | AND_ASSIGN) assignmentExpression]
+                           | LRSHIFT_ASN | EOR_ASSIGN | IOR_ASSIGN | AND_ASSIGN) 
+                           assignmentExpression]
+                           
+ternaryExpression :: = logicalOrExpression // level 12
+							{Q_MARK expression COLON expression logicalOrExpression}
 
 logicalOrExpression ::= conditionalAndExpression // level 11
                                {LOR conditionalAndExpression}

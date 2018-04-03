@@ -1138,7 +1138,7 @@ public class Parser {
      * 
      * <pre>
      *   assignmentExpression ::= 
-     *       logicalOrExpression // level 13
+     *       conditionalExpression // level 13
      *           [( ASSIGN  // conditionalExpression
      *            PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN //Must be a valid lhs
                   | DIV_ASSIGN | REM_ASSIGN
@@ -1151,7 +1151,7 @@ public class Parser {
 
     private JExpression assignmentExpression() {
         int line = scanner.token().line();
-        JExpression lhs = logicalOrExpression();
+        JExpression lhs = conditionalExpression();
         if (have(ASSIGN)) {
             return new JAssignOp(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
@@ -1167,6 +1167,35 @@ public class Parser {
         } else {
             return lhs;
         }
+    }
+    
+    /**
+     * Parse a conditional expression.
+     * 
+     * <pre>
+     *   ternaryExpression :: = logicalOrExpression // level 12
+							{Q_MARK expression COLON expression logicalOrExpression}
+     * </pre>
+     * 
+     * @return an AST for a conditionalExpression.
+     */
+
+    private JExpression conditionalExpression() {
+        int line = scanner.token().line();
+        boolean more = true;
+        JExpression lhs = logicalOrExpression();
+        while (more) {
+            if (have(Q_MARK)) {
+            	JExpression trueCond = expression();
+            	mustBe(COLON);
+            	JExpression falseCond = expression();
+                lhs = new JConditionalExprOp(line, lhs, trueCond, 
+                		falseCond); 
+            } else {
+                more = false;
+            }
+        }
+        return lhs;
     }
     
     
