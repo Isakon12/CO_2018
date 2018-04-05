@@ -3,6 +3,9 @@
 package jminusminus;
 
 import java.util.ArrayList;
+
+import jdk.nashorn.internal.ir.JumpStatement;
+
 import static jminusminus.TokenKind.*;
 
 /**
@@ -777,7 +780,19 @@ public class Parser {
             JStatement statement = statement();
             return new JWhileStatement(line, test, statement);
         } else if (have(FOR)) {
-        	return forLoop();
+        	return forLoop();       	
+        } else if (have(TRY)) {
+        	JBlock tryblock = block();
+        	mustBe(CATCH);
+        	mustBe(LPAREN);
+        	JFormalParameter exception = formalParameter();
+        	mustBe(RPAREN);
+        	JBlock catchblock = block();
+        	JBlock finallyblock = null;
+        	if(have(FINALLY)) {
+        		finallyblock = block();
+        	}
+        	return new JTryCatchStatement(line, tryblock, exception, catchblock, finallyblock);
         } else if (have(RETURN)) {
             if (have(SEMI)) {
                 return new JReturnStatement(line, null);

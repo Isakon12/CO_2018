@@ -33,8 +33,7 @@ memberDecl ::= IDENTIFIER            // constructor
              | (VOID | type) IDENTIFIER  // method
                  formalParameters
                  (block | SEMI)
-             | block    
-                 
+             | block       
              | type variableDeclarators SEMI // field
 
 block ::= LCURLY {blockStatement} RCURLY 
@@ -46,6 +45,7 @@ statement ::= block
             | IF parExpression statement [ELSE statement]
             | WHILE parExpression statement
             | FOR forLoop 
+            | TRY block CATCH LPAREN formalParameter RPAREN block [FINALLY block]
             | RETURN [expression] SEMI
             | SEMI 
             | statementExpression SEMI
