@@ -33,6 +33,8 @@ memberDecl ::= IDENTIFIER            // constructor
              | (VOID | type) IDENTIFIER  // method
                  formalParameters
                  (block | SEMI)
+             | block    
+                 
              | type variableDeclarators SEMI // field
 
 block ::= LCURLY {blockStatement} RCURLY 

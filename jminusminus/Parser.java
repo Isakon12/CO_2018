@@ -659,7 +659,14 @@ public class Parser {
     private JMember memberDecl(ArrayList<String> mods) {
         int line = scanner.token().line();
         JMember memberDecl = null;
-        if (seeIdentLParen()) {
+        
+        if(see(LCURLY)) {
+        	
+        	JBlock body = block();
+            memberDecl = new JBlockDeclaration(line, mods, body);
+        	
+        }
+        else if (seeIdentLParen()) {
             // A constructor
             mustBe(IDENTIFIER);
             String name = scanner.previousToken().image();
@@ -667,6 +674,7 @@ public class Parser {
             JBlock body = block();
             memberDecl = new JConstructorDeclaration(line, mods, name, params,
                     body);
+            
         } else {
             Type type = null;
             if (have(VOID)) {
