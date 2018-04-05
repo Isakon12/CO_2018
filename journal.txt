@@ -18,7 +18,7 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 
 --> STEP 1
 /// TODO	
-	Grammar (Reserved words : ?)
+	Grammar (Reserved words)
 	
 /// DONE	
 	Multi-line comments
@@ -67,13 +67,15 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 
 --> STEP 4
 /// TODO
-	double (all operators)
-	|| -= *= /= %= prefix-- postfix++
 	interface (and class declaration)
 	static instance
-	cond expresions (type left equal to result types, boolean type in cond)
 	for foreach
 	exceptions
+
+/// DONE
+	double 
+	|| -= *= /= %= prefix-- postfix++
+	cond expresions 
 
 --> STEP 5
 /// TODO

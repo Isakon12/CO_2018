@@ -107,6 +107,12 @@ class JConditionalExprOp extends JConditionalExpression {
      */
 
     public JExpression analyze(Context context) {
+        condition = (JExpression) condition.analyze(context);
+        condition.type().mustMatchExpected(line(), Type.BOOLEAN);
+        lexp = (JExpression) lexp.analyze(context);
+        rexp = (JExpression) rexp.analyze(context);
+        lexp.type().mustMatchExpected(line(), rexp.type());
+        type = lexp.type();
         return this;
     }
 

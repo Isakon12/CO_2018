@@ -1565,10 +1565,10 @@ public class Parser {
         while (see(DOT) || see(LBRACK)) {
             primaryExpr = selector(primaryExpr);
         }
-        while (have(DEC) || have(INC)) {
+        while (see(DEC) || see(INC)) {
         	if(have(DEC))
         		primaryExpr = new JPostDecrementOp(line, primaryExpr);
-        	else
+        	else if (have(INC))
         		primaryExpr = new JPostIncrementOp(line, primaryExpr);
         }
         return primaryExpr;

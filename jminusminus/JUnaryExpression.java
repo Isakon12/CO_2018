@@ -85,9 +85,16 @@ class JNegateOp extends JUnaryExpression {
      */
 
     public JExpression analyze(Context context) {
-        arg = arg.analyze(context);
-        arg.type().mustMatchExpected(line(), Type.INT);
-        type = Type.INT;
+    	arg = arg.analyze(context);
+        if (arg.type() == Type.INT) {
+            type = Type.INT;
+        } else if (arg.type() == Type.DOUBLE) {
+            type = Type.DOUBLE;
+        } else {
+            type = Type.ANY;
+            JAST.compilationUnit.reportSemanticError(line(),
+                    "Invalid argument type for -");
+        }
         return this;
     }
 
@@ -215,9 +222,16 @@ class JPostDecrementOp extends JUnaryExpression {
             type = Type.ANY;
         } else {
             arg = (JExpression) arg.analyze(context);
-            arg.type().mustMatchExpected(line(), Type.INT);
-            type = Type.INT;
-        }
+            if (arg.type() == Type.INT) {
+                type = Type.INT;
+            } else if (arg.type() == Type.DOUBLE) {
+                type = Type.DOUBLE;
+            } else {
+                type = Type.ANY;
+                JAST.compilationUnit.reportSemanticError(line(),
+                        "Invalid argument type for expr--");
+            }
+        }    
         return this;
     }
 
@@ -292,6 +306,22 @@ class JPostIncrementOp extends JUnaryExpression {
      */
 
     public JExpression analyze(Context context) {
+    	if (!(arg instanceof JLhs)) {
+            JAST.compilationUnit.reportSemanticError(line,
+                    "Operand to expr++ must have an LValue.");
+            type = Type.ANY;
+        } else {
+            arg = (JExpression) arg.analyze(context);
+            if (arg.type() == Type.INT) {
+                type = Type.INT;
+            } else if (arg.type() == Type.DOUBLE) {
+                type = Type.DOUBLE;
+            } else {
+                type = Type.ANY;
+                JAST.compilationUnit.reportSemanticError(line(),
+                        "Invalid argument type for expr++");
+            }
+        }    
         return this;
     }
 
@@ -346,15 +376,22 @@ class JPreIncrementOp extends JUnaryExpression {
      */
 
     public JExpression analyze(Context context) {
-        if (!(arg instanceof JLhs)) {
+    	if (!(arg instanceof JLhs)) {
             JAST.compilationUnit.reportSemanticError(line,
                     "Operand to ++expr must have an LValue.");
             type = Type.ANY;
         } else {
             arg = (JExpression) arg.analyze(context);
-            arg.type().mustMatchExpected(line(), Type.INT);
-            type = Type.INT;
-        }
+            if (arg.type() == Type.INT) {
+                type = Type.INT;
+            } else if (arg.type() == Type.DOUBLE) {
+                type = Type.DOUBLE;
+            } else {
+                type = Type.ANY;
+                JAST.compilationUnit.reportSemanticError(line(),
+                        "Invalid argument type for ++expr");
+            }
+        }    
         return this;
     }
 
@@ -428,6 +465,22 @@ class JPreDecrementOp extends JUnaryExpression {
      */
 
     public JExpression analyze(Context context) {
+    	if (!(arg instanceof JLhs)) {
+            JAST.compilationUnit.reportSemanticError(line,
+                    "Operand to --expr must have an LValue.");
+            type = Type.ANY;
+        } else {
+            arg = (JExpression) arg.analyze(context);
+            if (arg.type() == Type.INT) {
+                type = Type.INT;
+            } else if (arg.type() == Type.DOUBLE) {
+                type = Type.DOUBLE;
+            } else {
+                type = Type.ANY;
+                JAST.compilationUnit.reportSemanticError(line(),
+                        "Invalid argument type for --expr");
+            }
+        }    
         return this;
     }
 
@@ -541,9 +594,16 @@ class JPositiveOp extends JUnaryExpression {
      */
 
     public JExpression analyze(Context context) {
-        arg = arg.analyze(context);
-        arg.type().mustMatchExpected(line(), Type.INT);
-        type = Type.INT;
+    	arg = arg.analyze(context);
+        if (arg.type() == Type.INT) {
+            type = Type.INT;
+        } else if (arg.type() == Type.DOUBLE) {
+            type = Type.DOUBLE;
+        } else {
+            type = Type.ANY;
+            JAST.compilationUnit.reportSemanticError(line(),
+                    "Invalid argument type for +");
+        }
         return this;
     }
 
@@ -558,7 +618,7 @@ class JPositiveOp extends JUnaryExpression {
 
     public void codegen(CLEmitter output) {
         arg.codegen(output);
-        //NOP means no intruction
+        //NOP means empty intruction
         output.addNoArgInstruction(NOP);
     }
 
