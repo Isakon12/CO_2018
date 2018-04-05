@@ -32,7 +32,6 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 	
 --> STEP 2
 /// TODO
-	static instance
 	exceptions
 
 /// DONE
@@ -41,6 +40,7 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 	interface
 	for foreach
 	cond expresions
+	static instance
 	
 
 --> STEP 3
