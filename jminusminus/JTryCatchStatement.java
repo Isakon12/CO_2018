@@ -4,8 +4,6 @@ package jminusminus;
 
 import static jminusminus.CLConstants.*;
 
-import java.util.ArrayList;
-
 /**
  * The AST node for an if-statement.
  */
@@ -16,10 +14,10 @@ class JTryCatchStatement extends JStatement {
     private JBlock tryPart;
     
     /** exception clause. */
-    private ArrayList<JFormalParameter> exception;
+    private JFormalParameter exception;
 
     /** Else clause. */
-    private ArrayList<JBlock> catchPart;
+    private JBlock catchPart;
     
     /** Else clause. */
     private JBlock finallyPart;
@@ -37,8 +35,7 @@ class JTryCatchStatement extends JStatement {
      *           
      */
 
-    public JTryCatchStatement(int line, JBlock tryPart, ArrayList<JFormalParameter> exception,
-            ArrayList<JBlock> catchPart, JBlock finallyPart) {
+    public JTryCatchStatement(int line, JBlock tryPart, JFormalParameter exception, JBlock catchPart, JBlock finallyPart) {
         super(line);
         this.tryPart = tryPart;
         this.exception= exception;
@@ -87,20 +84,16 @@ class JTryCatchStatement extends JStatement {
         tryPart.writeToStdOut(p);
         p.indentLeft();
         p.printf("</TryBlock>\n");
-        for(int i = 0; i < exception.size(); i++) {
-            p.printf("<CatchBlock>\n");
-            p.indentRight();
-        	p.println("<FormalParameter>");
-            p.indentRight();
-            exception.get(i).writeToStdOut(p);
-            p.indentLeft();
-            p.printf("</FormalParameter>\n");
-            p.indentLeft();
-            p.indentRight();
-            catchPart.get(i).writeToStdOut(p);
-            p.indentLeft();
-            p.printf("</CatchBlock>\n");
-        }
+        p.println("<FormalParameter>");
+        p.indentRight();
+        exception.writeToStdOut(p);
+        p.indentLeft();
+        p.printf("</FormalParameter>\n");
+        p.printf("<CatchBlock>\n");
+        p.indentRight();
+        catchPart.writeToStdOut(p);
+        p.indentLeft();
+        p.printf("</CatchBlock>\n");
         if (finallyPart != null) {
             p.printf("<FinallyBlock>\n");
             p.indentRight();
