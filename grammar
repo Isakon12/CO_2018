@@ -29,7 +29,7 @@ classDeclaration ::= CLASS IDENTIFIER
 classBody ::= LCURLY {modifiers memberDecl} RCURLY
 
 memberDecl ::= IDENTIFIER            // constructor
-                 formalParameters block
+                 formalParameters [THROWS IDENTIFIER {COMMA IDENTIFIER}] block
              | (VOID | type) IDENTIFIER  // method
                  formalParameters [THROWS qualifiedIdentifier {COMMA qualifiedIdentifier}]
                  (block | SEMI)
@@ -42,7 +42,7 @@ blockStatement ::= localVariableDeclarationStatement
 				 | exceptionThrow
                  | statement
                  
-thorwException ::= THORW NEW quealifiedIdentifer formalParameters SEMI
+thorwException ::= THORW NEW quealifiedIdentifer [arguments] SEMI
 
 statement ::= block
             | IF parExpression statement [ELSE statement]

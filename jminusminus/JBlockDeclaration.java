@@ -18,7 +18,7 @@ class JBlockDeclaration extends JAST implements JMember {
     protected JBlock body;
 
     /** Built in analyze(). */
-    protected MethodContext context;
+    protected BlockContext context;
 
     /** Is method static. */
     protected boolean isStatic;
@@ -63,7 +63,7 @@ class JBlockDeclaration extends JAST implements JMember {
     }
 
     /**
-     * Declare this method in the parent (class) context.
+     * Declare this block in the parent (class) context.
      * 
      * @param context
      *                the parent (class) context.
@@ -73,16 +73,13 @@ class JBlockDeclaration extends JAST implements JMember {
      */
 
     public void preAnalyze(Context context, CLEmitter partial) {
-       
+    	if (isAbstract || isPublic || isPrivate || isProtected) {
+    		JAST.compilationUnit.reportSemanticError(line(),
+                    "bad modifier");
+    	}
     }
 
     /**
-     * Analysis for a method declaration involves (1) creating a
-     * new method context (that records the return type; this is
-     * used in the analysis of the method body), (2) bumping up
-     * the offset (for instance methods), (3) declaring the
-     * formal parameters in the method context, and (4) analyzing
-     * the method's body.
      * 
      * @param context
      *                context in which names are resolved.
@@ -90,8 +87,10 @@ class JBlockDeclaration extends JAST implements JMember {
      */
 
     public JAST analyze(Context context) {
-       
-	return this;
+        if (body != null) {
+            body = body.analyze(context);
+        }
+        return this;
     }
 
     /**

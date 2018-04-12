@@ -333,7 +333,7 @@ class JavaCCParser implements JavaCCParserConstants {
         recoverFromError( new int[] { SEMI, EOF }, e );
     }
         {if (true) return new JClassDeclaration( line, mods,
-            name, superClass, classBody );}
+            name, superClass, classBody, null );}
     throw new Error("Missing return statement in function");
   }
 

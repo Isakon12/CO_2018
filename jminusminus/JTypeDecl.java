@@ -44,5 +44,6 @@ interface JTypeDecl {
      */
 
     public Type thisType();
+    public Type superType();
 
 }

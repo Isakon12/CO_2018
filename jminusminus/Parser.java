@@ -3,9 +3,6 @@
 package jminusminus;
 
 import java.util.ArrayList;
-
-import jdk.nashorn.internal.ir.JumpStatement;
-
 import static jminusminus.TokenKind.*;
 
 /**
@@ -484,7 +481,7 @@ public class Parser {
      * 
      * <pre>
      *   interfaceDeclaration ::= INTERFACE IDENTIFIER 
-     *                        [EXTENDS qualifiedIdentifier {, qualifiedIdentifier}] 
+     *                        [EXTENDS qualifiedIdentifier {COMMA qualifiedIdentifier}] 
      *                        interfaceBody
      * </pre>
      * 
@@ -515,7 +512,7 @@ public class Parser {
      * <pre>
      *   classDeclaration ::= CLASS IDENTIFIER 
      *                        [EXTENDS qualifiedIdentifier] 
-     *                        [IMPLEMENTS qualifiedIdentifier {, qualifiedIdentifier}]
+     *                        [IMPLEMENTS qualifiedIdentifier {COMMA qualifiedIdentifier}]
      *                        classBody
      * </pre>
      * 
@@ -597,7 +594,7 @@ public class Parser {
      * 
      * <pre>
      * IntMemberDecl ::=  (VOID | type) IDENTIFIER  // method
-     *           formalParameters SEMI
+     *           formalParameters [THROWS IDENTIFIER {COMMA IDENTIFIER}] SEMI
      *           | type variableDeclarators SEMI // field
      * </pre>
      * 
@@ -617,9 +614,15 @@ public class Parser {
             mustBe(IDENTIFIER);
             String name = scanner.previousToken().image();
             ArrayList<JFormalParameter> params = formalParameters();
+            ArrayList<Type> exceptions = new ArrayList<Type>();
+            if(have(THROWS) ) {
+            	do {
+            		exceptions.add(qualifiedIdentifier());
+            	} while(have(COMMA));
+            }
             mustBe(SEMI);
             intMemberDecl = new JMethodDeclaration(line, mods, name, type,
-                        params, null);
+                        params, exceptions, null);
         } else {
         	type = type();
             if (seeIdentLParen()) {
@@ -627,9 +630,15 @@ public class Parser {
                 mustBe(IDENTIFIER);
                 String name = scanner.previousToken().image();
                 ArrayList<JFormalParameter> params = formalParameters();
+                ArrayList<Type> exceptions = new ArrayList<Type>();
+                if(have(THROWS) ) {
+                	do {
+                		exceptions.add(qualifiedIdentifier());
+                	} while(have(COMMA));
+                }
                 mustBe(SEMI);
                 intMemberDecl = new JMethodDeclaration(line, mods, name, type,
-                            params, null);
+                            params, exceptions, null);
             } else {
             	// Field
                 intMemberDecl = new JFieldDeclaration(line, mods,
@@ -646,11 +655,12 @@ public class Parser {
      * 
      * <pre>
      *   memberDecl ::= IDENTIFIER            // constructor
-     *                    formalParameters
+     *                    formalParameters 
      *                    block
      *                | (VOID | type) IDENTIFIER  // method
-     *                    formalParameters
+     *                    formalParameters [THROWS IDENTIFIER {COMMA IDENTIFIER}]
      *                    (block | SEMI)
+     *                | block
      *                | type variableDeclarators SEMI
      * </pre>
      * 
@@ -674,9 +684,15 @@ public class Parser {
             mustBe(IDENTIFIER);
             String name = scanner.previousToken().image();
             ArrayList<JFormalParameter> params = formalParameters();
+            ArrayList<Type> exceptions = new ArrayList<Type>();
+            if(have(THROWS) ) {
+            	do {
+            		exceptions.add(qualifiedIdentifier());
+            	} while(have(COMMA));
+            }
             JBlock body = block();
             memberDecl = new JConstructorDeclaration(line, mods, name, params,
-                    body);
+                    exceptions, body);
             
         } else {
             Type type = null;
@@ -686,9 +702,15 @@ public class Parser {
                 mustBe(IDENTIFIER);
                 String name = scanner.previousToken().image();
                 ArrayList<JFormalParameter> params = formalParameters();
+                ArrayList<Type> exceptions = new ArrayList<Type>();
+                if(have(THROWS) ) {
+                	do {
+                		exceptions.add(qualifiedIdentifier());
+                	} while(have(COMMA));
+                }
                 JBlock body = have(SEMI) ? null : block();
                 memberDecl = new JMethodDeclaration(line, mods, name, type,
-                        params, body);
+                        params, exceptions, body);
             } else {
                 type = type();
                 if (seeIdentLParen()) {
@@ -696,9 +718,15 @@ public class Parser {
                     mustBe(IDENTIFIER);
                     String name = scanner.previousToken().image();
                     ArrayList<JFormalParameter> params = formalParameters();
+                    ArrayList<Type> exceptions = new ArrayList<Type>();
+                    if(have(THROWS) ) {
+                    	do {
+                    		exceptions.add(qualifiedIdentifier());
+                    	} while(have(COMMA));
+                    }
                     JBlock body = have(SEMI) ? null : block();
                     memberDecl = new JMethodDeclaration(line, mods, name, type,
-                            params, body);
+                            params, exceptions, body);
                 } else {
                     // Field
                     memberDecl = new JFieldDeclaration(line, mods,
@@ -736,6 +764,7 @@ public class Parser {
      * 
      * <pre>
      *   blockStatement ::= localVariableDeclarationStatement
+     *   				  | exceptionThrow
      *                    | statement
      * </pre>
      * 
@@ -744,10 +773,32 @@ public class Parser {
 
     private JStatement blockStatement() {
         if (seeLocalVariableDeclaration()) {
-            return localVariableDeclarationStatement();
+            return localVariableDeclarationStatement();   
+        } else if (see(THROW)) {
+        	return exceptionThrow();
         } else {
             return statement();
         }
+    }
+    
+    /**
+     * Parse a thorw exception.
+     * 
+     * <pre>              
+	 * 		exceptionThrow ::= THORW NEW quealifiedIdentifer formalParameters SEMI
+     * </pre>
+     * 
+     * @return an AST for a throw exception.
+     */
+
+    private JStatement exceptionThrow() {
+        int line = scanner.token().line();
+        mustBe(THROW);
+        mustBe(NEW);
+        Type name = qualifiedIdentifier();
+        ArrayList<JExpression> args = arguments();
+        mustBe(SEMI);
+        return new JExceptionThrow(line, name, args);
     }
 
     /**
@@ -758,6 +809,8 @@ public class Parser {
      *               | IF parExpression statement [ELSE statement]
      *               | WHILE parExpression statement 
      *    			 | FOR forLoop
+     *               | TRY block CATCH LPAREN formalParameter RPAREN {CATCH LPAREN formalParameter RPAREN}
+     * 				     	block [FINALLY block]
      *               | RETURN [expression] SEMI
      *               | SEMI 
      *               | statementExpression SEMI
@@ -783,11 +836,15 @@ public class Parser {
         	return forLoop();       	
         } else if (have(TRY)) {
         	JBlock tryblock = block();
-        	mustBe(CATCH);
-        	mustBe(LPAREN);
-        	JFormalParameter exception = formalParameter();
-        	mustBe(RPAREN);
-        	JBlock catchblock = block();
+            ArrayList<JFormalParameter> exception = new ArrayList<JFormalParameter>();
+            ArrayList<JBlock> catchblock = new ArrayList<JBlock>();
+        	do {
+	        	mustBe(CATCH);
+	        	mustBe(LPAREN);
+	        	exception.add(formalParameter());
+	        	mustBe(RPAREN);
+	        	catchblock.add(block());
+        	} while (see(CATCH));
         	JBlock finallyblock = null;
         	if(have(FINALLY)) {
         		finallyblock = block();

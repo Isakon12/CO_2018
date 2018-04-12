@@ -89,6 +89,10 @@ class JInterfaceDeclaration extends JAST implements JTypeDecl {
     public Type thisType() {
         return thisType;
     }
+    
+    public Type superType() {
+        return Type.VOID;
+    }
 
     /**
      * The initializations for instance fields (now expressed as assignment

@@ -67,7 +67,6 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 --> STEP 4
 /// TODO
 	interface (and class declaration)
-	static instance
 	for foreach
 	exceptions
 
@@ -75,13 +74,15 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 	double 
 	|| -= *= /= %= prefix-- postfix++
 	cond expresions 
+	static instance
+	
 
 --> STEP 5
 /// TODO
 	double
 	|| -= *= /= %= prefix-- postfix++
 	interface
-	static instance
+	static instance 
 	cond expresions
 	for foreach
 	exceptions

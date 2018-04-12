@@ -23,6 +23,9 @@ class JMethodDeclaration
 
     /** The formal parameters. */
     protected ArrayList<JFormalParameter> params;
+    
+    /** Exceptions. */
+    protected ArrayList<Type> exceptions;
 
     /** Method body. */
     protected JBlock body;
@@ -63,8 +66,8 @@ class JMethodDeclaration
      */
 
     public JMethodDeclaration(int line, ArrayList<String> mods,
-        String name, Type returnType,
-        ArrayList<JFormalParameter> params, JBlock body)
+        String name, Type returnType, ArrayList<JFormalParameter> params, 
+        ArrayList<Type> exceptions, JBlock body)
 
     {
         super(line);
@@ -72,6 +75,7 @@ class JMethodDeclaration
         this.name = name;
         this.returnType = returnType;
         this.params = params;
+        this.exceptions = exceptions;
         this.body = body;
         this.isAbstract = mods.contains("abstract");
         this.isStatic = mods.contains("static");
@@ -243,6 +247,15 @@ class JMethodDeclaration
                 p.indentLeft();
             }
             p.println("</FormalParameters>");
+        }
+        if (exceptions != null) {
+            p.println("<Throws>");
+            p.indentRight();
+            for (Type e : exceptions) {
+                p.printf("<Exception name=\"%s\"/>\n", e.toString());
+            }
+            p.indentLeft();
+            p.println("</Throws>");
         }
         if (body != null) {
             p.println("<Body>");
