@@ -32,7 +32,6 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 	
 --> STEP 2
 /// TODO
-	exceptions
 
 /// DONE
 	Double
@@ -41,19 +40,11 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 	for foreach
 	cond expresions
 	static instance
-	
+	exceptions
 
 --> STEP 3
 /// TODO
-//// SCANNER
-	Multi-line comments
-	Break Byte Case Catch Const Continue Default Do Double Final Finally
-	Float For Goto Implements Interface Long Native Short Strictfp
-	Switch Synchronized Throw Throws Transient Try Volatile
-	? != /= -= *= >>= >>>= <<= < >= %= ^= |= &= ||
-	:
-	Literals
-	
+
 //// PARSER
 	Double
 	|| -= *= /= %= prefix-- postfix++
@@ -64,6 +55,14 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 	exceptions
 	
 /// DONE
+	Multi-line comments
+	Break Byte Case Catch Const Continue Default Do Double Final Finally
+	Float For Goto Implements Interface Long Native Short Strictfp
+	Switch Synchronized Throw Throws Transient Try Volatile
+	? != /= -= *= >>= >>>= <<= < >= %= ^= |= &= ||
+	:
+	Literals
+	
 
 --> STEP 4
 /// TODO
