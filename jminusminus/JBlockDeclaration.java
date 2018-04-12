@@ -17,9 +17,6 @@ class JBlockDeclaration extends JAST implements JMember {
     /** Method body. */
     protected JBlock body;
 
-    /** Built in analyze(). */
-    protected BlockContext context;
-
     /** Is method static. */
     protected boolean isStatic;
     
@@ -127,9 +124,6 @@ class JBlockDeclaration extends JAST implements JMember {
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JBlockDeclaration line=\"%d\">\n", line());
         p.indentRight();
-        if (context != null) {
-            context.writeToStdOut(p);
-        }
         if (mods != null) {
             p.println("<Modifiers>");
             p.indentRight();
