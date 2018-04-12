@@ -18,7 +18,7 @@ interfaceDeclaration ::= INTERFACE IDENTIFIER
 interfaceBody ::= LCURLY {modifiers intMemberDecl} RCURLY
 
 IntMemberDecl ::=  (VOID | type) IDENTIFIER  // method
-                 formalParameters SEMI
+                 formalParameters [THROWS IDENTIFIER {COMMA IDENTIFIER}] SEMI
                  | type variableDeclarators SEMI // field
 
 classDeclaration ::= CLASS IDENTIFIER 
@@ -31,7 +31,7 @@ classBody ::= LCURLY {modifiers memberDecl} RCURLY
 memberDecl ::= IDENTIFIER            // constructor
                  formalParameters block
              | (VOID | type) IDENTIFIER  // method
-                 formalParameters
+                 formalParameters [THROWS IDENTIFIER {COMMA IDENTIFIER}]
                  (block | SEMI)
              | block       
              | type variableDeclarators SEMI // field
@@ -45,7 +45,8 @@ statement ::= block
             | IF parExpression statement [ELSE statement]
             | WHILE parExpression statement
             | FOR forLoop 
-            | TRY block CATCH LPAREN formalParameter RPAREN block [FINALLY block]
+            | TRY block CATCH LPAREN formalParameter RPAREN {CATCH LPAREN formalParameter RPAREN}
+            	block [FINALLY block]
             | RETURN [expression] SEMI
             | SEMI 
             | statementExpression SEMI

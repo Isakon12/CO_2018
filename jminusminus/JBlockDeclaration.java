@@ -22,6 +22,18 @@ class JBlockDeclaration extends JAST implements JMember {
 
     /** Is method static. */
     protected boolean isStatic;
+    
+    /** Is method private. */
+    protected boolean isPrivate;
+    
+    /** Is method public. */
+    protected boolean isPublic;
+    
+    /** Is method protected. */
+    protected boolean isProtected;
+    
+    /** Is method abstrac. */
+    protected boolean isAbstract;
 
 
     /**
@@ -44,6 +56,10 @@ class JBlockDeclaration extends JAST implements JMember {
         this.mods = mods;
         this.body = body;
         this.isStatic = mods.contains("static");
+        this.isPublic = mods.contains("public");
+        this.isPrivate = mods.contains("private");
+        this.isProtected = mods.contains("protected");
+        this.isAbstract = mods.contains("abstract");
     }
 
     /**
