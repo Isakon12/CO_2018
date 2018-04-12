@@ -143,7 +143,7 @@ SKIP: {" "|"\t"|"\n"|"\r"|"\f"}
 SKIP: {<SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>}
 
 // multi line comment -- ignored
-SKIP: {<MULTI_LINE_COMMENT: "/*" (~[])* "*/">}
+SKIP: {<MULTI_LINE_COMMENT: "/*" (~["*"])* "*" (~["*","/"] (~["*"])* "*" | "*")* "/">}
 
 // Reserved words
 TOKEN:
@@ -178,7 +178,7 @@ TOKEN:
 | < LONG: "long" >
 | < NATIVE: "native" >
 | < NEW: "new" >
-| < NULL: "null" >
+| < NULL: "null" > 
 | < PACKAGE: "package">
 | < PRIVATE: "private" >
 | < PROTECTED: "protected" >
@@ -254,6 +254,7 @@ TOKEN:
 | < SEMI: ";" >
 | < COMMA: "," >
 | < DOT: "." >
+| < COLON: ":" >
 }
 
 // Identifiers
@@ -270,7 +271,15 @@ TOKEN:
 {
   < INT_LITERAL: ("0" | <NON_ZERO_DIGIT> (<DIGIT>)*) >
 | < CHAR_LITERAL: "'" (<ESC> | ~["'","\\","\n","\r"]) "'" >
-| < STRING_LITERAL: "\"" (<ESC> | ~["\"","\\","\n","\r"])* "\"" >   
+| < STRING_LITERAL: "\"" (<ESC> | ~["\"","\\","\n","\r"])* "\"" >
+| < DOUBLE_LITERAL: (<DIGIT>)+ "." (<DIGIT>)* (("e"|"E") ("+"|"-")? <DIGIT> (<DIGIT>)*)? ("d"|"D")? |
+					"."(<DIGIT>)+ (("e"|"E") ("+"|"-")? <DIGIT> (<DIGIT>)*)? ("d"|"D")? |
+					(<DIGIT>)+ (("e"|"E") ("+"|"-")? <DIGIT> (<DIGIT>)*) ("d"|"D")? |
+					(<DIGIT>)+ ("d"|"D")>
+| < FLOAT_LITERAL: (<DIGIT>)+ ("."(<DIGIT>)*)? (("e"|"E") ("+"|"-")? <DIGIT> (<DIGIT>)*)?("f"|"F") |
+					 "."(<DIGIT>)+ (("e"|"E") ("+"|"-")? <DIGIT> (<DIGIT>)*)?("f"|"F")>
+| < LONG_LITERAL:  (<DIGIT>)+ ("."(<DIGIT>)*)? (("e"|"E") ("+"|"-")? <DIGIT> (<DIGIT>)*)?("l"|"L") |
+					 "."(<DIGIT>)+ (("e"|"E") ("+"|"-")? <DIGIT> (<DIGIT>)*)?("l"|"L")>
 | < #ESC: "\\" ["n","t","b","r","f","\\","'","\""] >
 }
 
