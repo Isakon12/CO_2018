@@ -931,8 +931,9 @@ public class Parser {
      * Parse a for loop.
      * 
      * <pre>
-     *   forLoop ::= LPAREN (type variableDeclarator SEMI expression SEMI expression |
- type IDENTIFIER COLON IDENTIFIER) RPAREN statement
+     *   forLoop ::= LPAREN ((type variableDeclarator| expression) 
+     *   SEMI expression SEMI expression 
+     *   | type IDENTIFIER COLON IDENTIFIER) RPAREN statement
      * </pre>
      * 
      * @return an AST for a for loop.
@@ -941,24 +942,35 @@ public class Parser {
     private JStatement forLoop() {
         int line = scanner.token().line();
     	mustBe(LPAREN);
-    	Type init_type = type();
-    	JVariableDeclarator init = variableDeclarator(init_type);
-    	if(init.initializer() == null && have(COLON)) {
-    		String identifier = scanner.token().image();
-            TypeName id = new TypeName(line, identifier);
-            JVariable var = new JVariable(line, id.simpleName());
-            scanner.next();
-            mustBe(RPAREN);
-            JStatement statement = statement();
-            return new JForEachStatement(line, init, var, statement);
-    	}
-        mustBe(SEMI);
+    	if(seeLocalVariableDeclaration()) {
+	    	Type init_type = type();
+	    	JVariableDeclarator init = variableDeclarator(init_type);
+	    	if(init.initializer() == null && have(COLON)) {
+	    		String identifier = scanner.token().image();
+	            TypeName id = new TypeName(line, identifier);
+	            JVariable var = new JVariable(line, id.simpleName());
+	            scanner.next();
+	            mustBe(RPAREN);
+	            JStatement statement = statement();
+	            return new JForEachStatement(line, init, var, statement);
+	    	}
+	        mustBe(SEMI);
+	        JExpression test = expression();
+	        mustBe(SEMI);
+	        JExpression incr = expression();
+	        mustBe(RPAREN);
+	        JStatement statement = statement();
+	        return new JForStatement(line, init, null, test, incr, statement);
+	    	}
+        JExpression init = expression();
+    	mustBe(SEMI);
         JExpression test = expression();
         mustBe(SEMI);
         JExpression incr = expression();
         mustBe(RPAREN);
         JStatement statement = statement();
-        return new JForStatement(line, init, test, incr, statement);
+        return new JForStatement(line, null, init, test, incr, statement);
+    	
     }
 
     /**

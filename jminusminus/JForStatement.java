@@ -10,6 +10,8 @@ import static jminusminus.CLConstants.*;
 
 class JForStatement extends JStatement {
 
+	private JExpression init_expr;
+	
 	/** Variable **/
 	private JVariableDeclarator init;
 	
@@ -34,10 +36,11 @@ class JForStatement extends JStatement {
      *            the body.
      */
 
-    public JForStatement(int line, JVariableDeclarator init, JExpression condition, 
-    		JExpression incr, JStatement body) {
+    public JForStatement(int line, JVariableDeclarator init, JExpression init_expr,
+    		JExpression condition, JExpression incr, JStatement body) {
         super(line);
         this.init = init;
+        this.init_expr = init_expr;
         this.condition = condition;
         this.incr = incr;
         this.body = body;
@@ -75,7 +78,20 @@ class JForStatement extends JStatement {
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JForStatement line=\"%d\">\n", line());
         p.indentRight();
-        init.writeToStdOut(p);
+        if(init != null)  {
+            p.printf("<InitVariable>\n");
+            p.indentRight();
+            init.writeToStdOut(p);
+            p.indentLeft();
+            p.printf("</InitVariable>\n");
+        }
+        if(init_expr != null)  {
+            p.printf("<InitExpression>\n");
+            p.indentRight();
+            init_expr.writeToStdOut(p);
+            p.indentLeft();
+            p.printf("</InitExpression>\n");
+        }
         p.printf("<TestExpression>\n");
         p.indentRight();
         condition.writeToStdOut(p);
