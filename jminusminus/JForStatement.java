@@ -23,6 +23,11 @@ class JForStatement extends JStatement {
     
     /** The body. */
     private JStatement body;
+    
+    /**
+     * The new context (built in analyze()) represented by this block.
+     */
+    private LocalContext context;
 
     /**
      * Construct an AST node for a for-statement given its line number, the
@@ -56,6 +61,19 @@ class JForStatement extends JStatement {
      */
 
     public JForStatement analyze(Context context) {
+		this.context = new LocalContext(context);
+    	if(init != null) {
+    		init = (JVariableDeclarator) init.analyze(this.context);
+    		LocalVariableDefn defn = new LocalVariableDefn(init.type(), 
+                    this.context.nextOffset());
+            defn.initialize();
+            this.context.addEntry(init.line(), init.name(), defn);
+    	}
+    	if(init_expr != null) init_expr = (JExpression) init_expr.analyze(this.context);
+    	condition = condition.analyze(this.context);
+        condition.type().mustMatchExpected(line(), Type.BOOLEAN);
+        incr = (JExpression) incr.analyze(this.context);
+        body = (JStatement) body.analyze(this.context);
     	return this;
     }
 
@@ -78,6 +96,11 @@ class JForStatement extends JStatement {
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JForStatement line=\"%d\">\n", line());
         p.indentRight();
+        if (context != null) {
+            p.indentRight();
+            context.writeToStdOut(p);
+            p.indentLeft();
+        }
         if(init != null)  {
             p.printf("<InitVariable>\n");
             p.indentRight();

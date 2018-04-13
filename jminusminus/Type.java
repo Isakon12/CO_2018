@@ -330,6 +330,23 @@ class Type {
                     "Type %s doesn't match type %s", this, expectedType);
         }
     }
+    
+    /**
+     * An assertion that this type not matches the specified type. If there is no
+     * match, an error message is written.
+     * 
+     * @param line
+     *            the line near which the mismatch occurs.
+     * @param expectedType
+     *            type with which to match.
+     */
+
+    public void mustNotMatchExpected(int line, Type expectedType) {
+        if (matchesExpected(expectedType)) {
+            JAST.compilationUnit.reportSemanticError(line,
+                    "Type %s match type %s", this, expectedType);
+        }
+    }
 
     /**
      * Does this type match the expected type? For now, "matches" means

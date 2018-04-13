@@ -23,6 +23,12 @@ class JTryCatchStatement extends JStatement {
     
     /** Else clause. */
     private JBlock finallyPart;
+    
+    /**
+     * The new context (built in analyze()) represented by this block.
+     */
+    private ArrayList<LocalContext> context;
+
 
     /**
      * Construct an AST node for an try-statement given its line number, the test
@@ -44,7 +50,7 @@ class JTryCatchStatement extends JStatement {
         this.exception= exception;
         this.catchPart = catchPart;
         this.finallyPart = finallyPart;
-        
+        this.context = new ArrayList<LocalContext>();
     }
 
     /**
@@ -57,7 +63,31 @@ class JTryCatchStatement extends JStatement {
      */
 
     public JStatement analyze(Context context) {
+        tryPart = tryPart.analyze(context);
         
+        ArrayList<Type> typeTmp = new ArrayList<Type>();
+        // Resolve types of the formal parameters
+        for (JFormalParameter param : exception) {
+            param.setType(param.type().resolve(context));  
+            for(Type t : typeTmp) {
+            	param.type().mustNotMatchExpected(line,t);
+            }
+            typeTmp.add(param.type());
+        }    
+        
+        ArrayList<JBlock> catchPartTmp = new ArrayList<JBlock>();
+        ArrayList<JFormalParameter> exceptionTmp = new ArrayList<JFormalParameter>();
+        for (int i = 0; i < exception.size(); i++) {
+    		this.context.add(new LocalContext(context));
+    		LocalVariableDefn defn = new LocalVariableDefn(exception.get(i).type(), 
+                    this.context.get(i).nextOffset());
+    		defn.initialize();
+            this.context.get(i).addEntry(exception.get(i).line(), exception.get(i).name(), defn);
+            catchPartTmp.add(catchPart.get(i).analyze(this.context.get(i)));
+            
+        }
+        catchPart = catchPartTmp;
+        finallyPart = finallyPart.analyze(context);
         return this;
     }
 
@@ -89,7 +119,8 @@ class JTryCatchStatement extends JStatement {
         p.printf("</TryBlock>\n");
         for(int i = 0; i < exception.size(); i++) {
             p.printf("<CatchBlock>\n");
-            p.indentRight();
+            p.indentRight();      
+            context.get(i).writeToStdOut(p);
         	p.println("<FormalParameter>");
             p.indentRight();
             exception.get(i).writeToStdOut(p);

@@ -3,7 +3,6 @@
 package jminusminus;
 
 import java.util.ArrayList;
-
 /**
  * The AST node for a block, which delimits a nested level of scope.
  */

@@ -4,6 +4,7 @@ package jminusminus;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -50,6 +51,8 @@ class Context {
      * definitions.
      */
     protected Map<String, IDefn> entries;
+    
+    protected ArrayList<Type> throwedExceptions;
 
     /**
      * Construct a Context.
@@ -69,6 +72,7 @@ class Context {
         this.classContext = classContext;
         this.compilationUnitContext = compilationUnitContext;
         this.entries = new HashMap<String, IDefn>();
+        this.throwedExceptions = new ArrayList<Type>();
     }
 
     /**
@@ -135,6 +139,14 @@ class Context {
         if (!type.toString().equals(type.simpleName())) {
             compilationUnitContext.addEntry(line, type.toString(), iDefn);
         }
+    }
+    
+    public void addException(Type exception) {
+        throwedExceptions.add(exception);
+    }
+    
+    public ArrayList<Type> getThrowedException() {
+        return throwedExceptions;
     }
 
     /**

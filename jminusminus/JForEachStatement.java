@@ -18,6 +18,11 @@ class JForEachStatement extends JStatement {
     
     /** The body. */
     private JStatement body;
+    
+    /**
+     * The new context (built in analyze()) represented by this block.
+     */
+    private LocalContext context;
 
     /**
      * Construct an AST node for a for-each-statement given its line number, the
@@ -49,6 +54,16 @@ class JForEachStatement extends JStatement {
      */
 
     public JForEachStatement analyze(Context context) {
+    	
+    	this.context = new LocalContext(context);
+    	
+    	init = (JVariableDeclarator) init.analyze(this.context);
+		LocalVariableDefn defn = new LocalVariableDefn(init.type(), 
+                this.context.nextOffset());
+        defn.initialize();
+        this.context.addEntry(init.line(), init.name(), defn);
+    	identifier = (JVariable) identifier.analyze(this.context);
+        init.type().mustMatchExpected(line(), identifier.type().componentType());
     	return this;
     }
 
@@ -71,6 +86,11 @@ class JForEachStatement extends JStatement {
     public void writeToStdOut(PrettyPrinter p) {
         p.printf("<JForEachStatement line=\"%d\">\n", line());
         p.indentRight();
+        if (context != null) {
+            p.indentRight();
+            context.writeToStdOut(p);
+            p.indentLeft();
+        }
         p.printf("<InitVariable>\n");
         p.indentRight();
         init.writeToStdOut(p);

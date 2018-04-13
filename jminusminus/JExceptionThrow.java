@@ -3,6 +3,7 @@
 package jminusminus;
 
 import java.util.ArrayList;
+
 class JExceptionThrow extends JStatement {
 
     /** Arguments. */
@@ -41,6 +42,7 @@ class JExceptionThrow extends JStatement {
      */
 
     public JStatement analyze(Context context) {
+    	context.addException(name);
         return this;
     }
 
