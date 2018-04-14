@@ -62,7 +62,7 @@ formalParameter ::= type IDENTIFIER
 
 parExpression ::= LPAREN expression RPAREN
 
-forLoop ::= LPAREN ((type variableDeclarator| expression) 
+forLoop ::= LPAREN ((type variableDeclarators | expression) 
         SEMI expression SEMI expression 
         | type IDENTIFIER COLON IDENTIFIER) RPAREN statement
 
