@@ -944,15 +944,15 @@ public class Parser {
     	mustBe(LPAREN);
     	if(seeLocalVariableDeclaration()) {
 	    	Type init_type = type();
-	    	JVariableDeclarator init = variableDeclarator(init_type);
-	    	if(init.initializer() == null && have(COLON)) {
+	    	ArrayList<JVariableDeclarator> init = variableDeclarators(init_type);
+	    	if(init.size() == 1 && init.get(0).initializer() == null && have(COLON)) {
 	    		String identifier = scanner.token().image();
 	            TypeName id = new TypeName(line, identifier);
 	            JVariable var = new JVariable(line, id.simpleName());
 	            scanner.next();
 	            mustBe(RPAREN);
 	            JStatement statement = statement();
-	            return new JForEachStatement(line, init, var, statement);
+	            return new JForEachStatement(line, init.get(0), var, statement);
 	    	}
 	        mustBe(SEMI);
 	        JExpression test = expression();

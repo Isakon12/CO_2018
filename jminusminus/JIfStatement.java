@@ -4,6 +4,8 @@ package jminusminus;
 
 import static jminusminus.CLConstants.*;
 
+import java.util.HashSet;
+
 /**
  * The AST node for an if-statement.
  */
@@ -39,6 +41,18 @@ class JIfStatement extends JStatement {
         this.condition = condition;
         this.thenPart = thenPart;
         this.elsePart = elsePart;
+    }
+    
+    /**
+     * Return the inner throwed exceptions
+     * 
+     */
+    public HashSet<Type> throwedExceptions() {
+    	HashSet<Type> tmp = new HashSet<Type>();
+        tmp.addAll(thenPart.throwedExceptions());
+        if(elsePart != null)
+            tmp.addAll(elsePart.throwedExceptions());
+        return tmp;
     }
 
     /**

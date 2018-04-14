@@ -3,6 +3,7 @@
 package jminusminus;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 class JExceptionThrow extends JStatement {
 
@@ -42,10 +43,20 @@ class JExceptionThrow extends JStatement {
      */
 
     public JStatement analyze(Context context) {
-    	context.addException(name);
+    	name = name.resolve(context);
         return this;
     }
 
+    /**
+     * Return the throwed exception
+     * 
+     */
+    public HashSet<Type> throwedExceptions() {
+    	HashSet<Type> tmp = new HashSet<Type>();
+    	tmp.add(name);
+    	return tmp;
+    }
+    
     /**
      * Local variable initializations (rewritten as assignments in analyze())
      * are generated here.

@@ -4,6 +4,9 @@ package jminusminus;
 
 import static jminusminus.CLConstants.*;
 
+import java.util.HashSet;
+import java.util.ArrayList;
+
 /**
  * The AST node for a for-statement.
  */
@@ -13,7 +16,7 @@ class JForStatement extends JStatement {
 	private JExpression init_expr;
 	
 	/** Variable **/
-	private JVariableDeclarator init;
+	private ArrayList<JVariableDeclarator> init;
 	
     /** Test expression. */
     private JExpression condition;
@@ -41,14 +44,24 @@ class JForStatement extends JStatement {
      *            the body.
      */
 
-    public JForStatement(int line, JVariableDeclarator init, JExpression init_expr,
-    		JExpression condition, JExpression incr, JStatement body) {
+    public JForStatement(int line, ArrayList<JVariableDeclarator> init, 
+    		JExpression init_expr, JExpression condition, JExpression incr, 
+    		JStatement body) {
         super(line);
         this.init = init;
         this.init_expr = init_expr;
         this.condition = condition;
         this.incr = incr;
         this.body = body;
+    }
+    
+    /**
+     * 
+     * @return throwed exceptions in the body of the loop
+     */
+    
+    public HashSet<Type> throwedExceptions() {
+        return body.throwedExceptions();
     }
 
     /**
@@ -63,11 +76,15 @@ class JForStatement extends JStatement {
     public JForStatement analyze(Context context) {
 		this.context = new LocalContext(context);
     	if(init != null) {
-    		init = (JVariableDeclarator) init.analyze(this.context);
-    		LocalVariableDefn defn = new LocalVariableDefn(init.type(), 
-                    this.context.nextOffset());
-            defn.initialize();
-            this.context.addEntry(init.line(), init.name(), defn);
+    		ArrayList<JVariableDeclarator> tmp = new ArrayList<JVariableDeclarator>();
+    		for(JVariableDeclarator var : init) {
+        		var = (JVariableDeclarator) var.analyze(this.context);
+        		LocalVariableDefn defn = new LocalVariableDefn(var.type(), 
+                        this.context.nextOffset());
+                defn.initialize();
+                this.context.addEntry(var.line(), var.name(), defn);
+    		}
+    		init = tmp;
     	}
     	if(init_expr != null) init_expr = (JExpression) init_expr.analyze(this.context);
     	condition = condition.analyze(this.context);
@@ -104,7 +121,8 @@ class JForStatement extends JStatement {
         if(init != null)  {
             p.printf("<InitVariable>\n");
             p.indentRight();
-            init.writeToStdOut(p);
+            for(JVariableDeclarator var : init)
+            	var.writeToStdOut(p);
             p.indentLeft();
             p.printf("</InitVariable>\n");
         }

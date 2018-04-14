@@ -5,6 +5,7 @@ package jminusminus;
 import static jminusminus.CLConstants.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * The AST node for an if-statement.
@@ -51,6 +52,20 @@ class JTryCatchStatement extends JStatement {
         this.catchPart = catchPart;
         this.finallyPart = finallyPart;
         this.context = new ArrayList<LocalContext>();
+    }
+    
+    /**
+     * Return the inner throwed exceptions
+     * 
+     */
+    public HashSet<Type> throwedExceptions() {
+    	HashSet<Type> tmp = new HashSet<Type>();
+        for (JBlock catchBlocks : catchPart) {
+            HashSet<Type> innerExceptions = catchBlocks.throwedExceptions();
+            tmp.addAll(innerExceptions);
+        }
+        tmp.addAll(finallyPart.throwedExceptions());
+        return tmp;
     }
 
     /**
@@ -120,7 +135,8 @@ class JTryCatchStatement extends JStatement {
         for(int i = 0; i < exception.size(); i++) {
             p.printf("<CatchBlock>\n");
             p.indentRight();      
-            context.get(i).writeToStdOut(p);
+            if(context.size() != 0)
+            	this.context.get(i).writeToStdOut(p);
         	p.println("<FormalParameter>");
             p.indentRight();
             exception.get(i).writeToStdOut(p);

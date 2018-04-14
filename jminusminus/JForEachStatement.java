@@ -4,6 +4,8 @@ package jminusminus;
 
 import static jminusminus.CLConstants.*;
 
+import java.util.HashSet;
+
 /**
  * The AST node for a for-each-statement.
  */
@@ -42,6 +44,15 @@ class JForEachStatement extends JStatement {
         this.init = init;
         this.identifier = identifier;
         this.body = body;
+    }
+    
+    /**
+     * 
+     * @return throwed exceptions in the body of the loop
+     */
+    
+    public HashSet<Type> throwedExceptions() {
+        return body.throwedExceptions();
     }
 
     /**

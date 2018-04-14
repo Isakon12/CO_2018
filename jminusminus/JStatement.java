@@ -1,6 +1,7 @@
 // Copyright 2013 Bill Campbell, Swami Iyer and Bahar Akbal-Delibas
 
 package jminusminus;
+import java.util.HashSet;
 
 /**
  * The AST node for a statement (includes expressions). The mother of all
@@ -18,6 +19,14 @@ abstract class JStatement extends JAST {
 
     protected JStatement(int line) {
         super(line);
+    }
+    
+    /**
+     * Return empty set by default
+     * 
+     */
+    public HashSet<Type> throwedExceptions() {
+    	return new HashSet<Type>();
     }
 
 }

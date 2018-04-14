@@ -2,6 +2,8 @@
 
 package jminusminus;
 
+import java.util.HashSet;
+
 /**
  * The AST node for an expression that appears as a statement. Only the
  * expressions that have a side-effect are valid statement expressions.
@@ -26,7 +28,7 @@ class JStatementExpression extends JStatement {
         super(line);
         this.expr = expr;
     }
-
+    
     /**
      * Analysis involves analyzing the encapsulated expression if indeed it is a
      * statement expression, i.e., one with a side effect.

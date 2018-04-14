@@ -3,6 +3,8 @@
 package jminusminus;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+
 /**
  * The AST node for a block, which delimits a nested level of scope.
  */
@@ -41,6 +43,19 @@ class JBlock extends JStatement {
     public ArrayList<JStatement> statements() {
         return statements;
     }
+    
+    /**
+     * Return the inner throwed exceptions
+     * 
+     */
+    public HashSet<Type> throwedExceptions() {
+    	HashSet<Type> tmp = new HashSet<Type>();
+        for (JStatement statement : statements) {
+            HashSet<Type> innerExceptions = statement.throwedExceptions();
+            tmp.addAll(innerExceptions);
+        }
+        return tmp;
+    }
 
     /**
      * Analyzing a block consists of creating a new nested context for that
@@ -59,6 +74,8 @@ class JBlock extends JStatement {
             statements.set(i, (JStatement) statements.get(i).analyze(
                     this.context));
         }
+        
+        
         return this;
     }
 

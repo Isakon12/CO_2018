@@ -3,6 +3,8 @@
 package jminusminus;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+
 import static jminusminus.CLConstants.*;
 
 /**
@@ -97,6 +99,13 @@ class JMethodDeclaration
         for (JFormalParameter param : params) {
             param.setType(param.type().resolve(context));
         }
+        
+        ArrayList typeTmp = new ArrayList<Type>();
+        for (Type exp : exceptions) {
+            exp = exp.resolve(context);
+            typeTmp.add(exp);
+        }
+        exceptions =  typeTmp;
 
         // Resolve return type
         returnType = returnType.resolve(context);
@@ -160,12 +169,26 @@ class JMethodDeclaration
         }
         if (body != null) {
             body = body.analyze(this.context);
-	    if (returnType!=Type.VOID && ! methodContext.methodHasReturn()){
-		JAST.compilationUnit.reportSemanticError(line(),
-		    "Non-void method must have a return statement");
-	    }
+		    if (returnType!=Type.VOID && ! methodContext.methodHasReturn()){
+			JAST.compilationUnit.reportSemanticError(line(),
+			    "Non-void method must have a return statement");
+		    }
         }
-	return this;
+        
+        HashSet<Type> throwedExceptions = body.throwedExceptions();
+        if (throwedExceptions.size() != 0) {
+        	for(Type throwed : throwedExceptions) {
+        		boolean found = false;
+        		for(Type exp : exceptions) 
+            		if(exp.equals(throwed)) found = true;
+        		if(!found) {
+        			JAST.compilationUnit.reportSemanticError(line(),
+        				    "Exception throwed but not declared as throws");
+        		}
+    		}
+        }
+        
+        return this;
     }
 
     /**

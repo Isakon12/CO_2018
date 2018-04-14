@@ -4,6 +4,8 @@ package jminusminus;
 
 import static jminusminus.CLConstants.*;
 
+import java.util.HashSet;
+
 /**
  * The AST node for a while-statement.
  */
@@ -32,6 +34,15 @@ class JWhileStatement extends JStatement {
         super(line);
         this.condition = condition;
         this.body = body;
+    }
+    
+    /**
+     * 
+     * @return throwed exceptions in the body of the loop
+     */
+    
+    public HashSet<Type> throwedExceptions() {
+        return body.throwedExceptions();
     }
 
     /**
