@@ -95,6 +95,7 @@ class JInterfaceDeclaration extends JAST implements JTypeDecl {
         String qualifiedName = JAST.compilationUnit.packageName() == "" ? name
                 : JAST.compilationUnit.packageName() + "/" + name;
         CLEmitter partial = new CLEmitter(false);
+        mods.add("interface");
         partial.addClass(mods, qualifiedName, Type.OBJECT.jvmName(), null,
                 false); 
         thisType = Type.typeFor(partial.toClass());
@@ -127,6 +128,13 @@ class JInterfaceDeclaration extends JAST implements JTypeDecl {
             typeTmp.add(inter);
         }
         superInterfaces =  typeTmp;
+        
+        for (Type inter : superInterfaces) {
+     	   if(!inter.isInterface()) {
+     		   JAST.compilationUnit.reportSemanticError(line,
+                        "%s is not an interface", inter.toString());
+     	   }
+        }
 
         // Create the (partial) class
         CLEmitter partial = new CLEmitter(false);
@@ -134,12 +142,12 @@ class JInterfaceDeclaration extends JAST implements JTypeDecl {
         // Add the class header to the partial class
         String qualifiedName = JAST.compilationUnit.packageName() == "" ? name
                 : JAST.compilationUnit.packageName() + "/" + name;
-        ArrayList StringInterfaces = new ArrayList<String>();
-        for (Type inter : superInterfaces) {
-            StringInterfaces.add(inter.jvmName());
+        ArrayList<String> stringInterfaces = new ArrayList<String>();
+        for(Type inter : superInterfaces) {
+        	stringInterfaces.add(inter.jvmName());
         }
         partial.addClass(mods, qualifiedName, Type.OBJECT.jvmName(), 
-        		StringInterfaces, false);
+        		stringInterfaces, false);
 
         // Pre-analyze the members and add them to the partial
         // class

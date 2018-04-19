@@ -541,7 +541,8 @@ public class Parser {
     	    	superInterfaces.add(qualifiedIdentifier());
         	} while(have(COMMA));
         }
-        return new JClassDeclaration(line, mods, name, superClass, classBody(),superInterfaces);
+        return new JClassDeclaration(line, mods, name, superClass, classBody(),
+        		superInterfaces);
     }    
     
     /**

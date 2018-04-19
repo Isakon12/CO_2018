@@ -3,8 +3,6 @@
 package jminusminus;
 
 import java.util.ArrayList;
-
-
 import static jminusminus.CLConstants.*;
 
 /**
@@ -129,9 +127,6 @@ class JClassDeclaration extends JAST implements JTypeDecl {
                 : JAST.compilationUnit.packageName() + "/" + name;
         CLEmitter partial = new CLEmitter(false);
         ArrayList StringInterfaces = new ArrayList<String>();
-//        for (Type inter : superInterfaces) {
-//            StringInterfaces.add(inter.jvmName());
-//        }
         partial.addClass(mods, qualifiedName, Type.OBJECT.jvmName(), null,
                 false); // Object for superClass, just for now
         thisType = Type.typeFor(partial.toClass());
@@ -161,6 +156,13 @@ class JClassDeclaration extends JAST implements JTypeDecl {
             typeTmp.add(inter);
         }
         superInterfaces =  typeTmp;
+        
+       for (Type inter : superInterfaces) {
+    	   if(!inter.isInterface()) {
+    		   JAST.compilationUnit.reportSemanticError(line,
+                       "%s is not an interface", inter.toString());
+    	   }
+       }
 
         // Creating a partial class in memory can result in a
         // java.lang.VerifyError if the semantics below are
@@ -177,11 +179,11 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         // Add the class header to the partial class
         String qualifiedName = JAST.compilationUnit.packageName() == "" ? name
                 : JAST.compilationUnit.packageName() + "/" + name;
-        ArrayList StringInterfaces = new ArrayList<String>();
-        for (Type inter : superInterfaces) {
-            StringInterfaces.add(inter.jvmName());
+        ArrayList<String> stringInterfaces = new ArrayList<String>();
+        for(Type inter : superInterfaces) {
+        	stringInterfaces.add(inter.jvmName());
         }
-        partial.addClass(mods, qualifiedName, superType.jvmName(), StringInterfaces, false);
+        partial.addClass(mods, qualifiedName, superType.jvmName(), stringInterfaces, false);
 
         // Pre-analyze the members and add them to the partial
         // class
@@ -222,7 +224,15 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         for (JMember member : classBlock) {
             ((JAST) member).analyze(this.context);
         }
+        
 
+        String int_methods = thisType.allInstanceMethods();
+        if(int_methods != null)
+        	JAST.compilationUnit.reportSemanticError(line,
+                    "The following methods%s from implemented "
+                    + "interface are not overwrited",int_methods);
+
+        
         // Copy declared fields for purposes of initialization.
         for (JMember member : classBlock) {
             if (member instanceof JFieldDeclaration) {

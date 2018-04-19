@@ -171,7 +171,7 @@ class Type {
         return classRep == null || classRep.getSuperclass() == null ? null
                 : typeFor(classRep.getSuperclass());
     }
-    
+
     /**
      * Return the Type's interfaces type (or null if there is none). Meaningful only
      * to class Types.
@@ -187,7 +187,6 @@ class Type {
     		tmp.add(typeFor(inter));
         return tmp;
     }
-  
 
     /**
      * Is this a primitive type?
@@ -252,6 +251,56 @@ class Type {
     }
 
     /**
+     * Return a list of this interface methods
+     * @return a list of interface methods.
+     */
+
+    private ArrayList<String> interfaceMethods() {
+        ArrayList<String> interfaceMethods = new ArrayList<String>();
+        if(interfacesClass()  != null) {
+        	for(Type inter : interfacesClass())
+        		interfaceMethods.addAll(inter.interfaceMethods());
+        }
+        for(java.lang.reflect.Method method : classRep.getDeclaredMethods()) {
+        	Method meths = new Method(method);
+        	interfaceMethods.add(meths.toString());
+        }
+        return interfaceMethods;
+    }
+    
+    /**
+     * Return a list of this interface methods
+     * @return a list of interface methods.
+     */
+
+    private ArrayList<String> upperInterfaceMethods() {
+        ArrayList<String> interfaceMethods = new ArrayList<String>();
+        if(interfacesClass()  != null) {
+        	for(Type inter : interfacesClass())
+        		interfaceMethods.addAll(inter.interfaceMethods());
+        }
+        return interfaceMethods;
+    }
+    
+    public String allInstanceMethods() {
+    	String methods = "";
+    	ArrayList<String> interMethods = upperInterfaceMethods();
+    	ArrayList<String> classMethods = new ArrayList<String>();
+    	
+    	for(java.lang.reflect.Method method : classRep.getDeclaredMethods()) {
+        	Method meths = new Method(method);
+        	classMethods.add(meths.toString());
+        }
+    	
+    	for(String inter_method : interMethods) {
+    		if(!classMethods.contains(inter_method)) {
+    			methods += ", " + inter_method.toString();
+    		}
+    	}
+    	return methods.equals("") ? null : methods;
+    }
+    
+    /**
      * Return a list of this class' abstract methods? It does has abstract
      * methods if (1) Any method declared in the class is abstract, or (2) Its
      * superclass has an abstract method which is not overridden here.
@@ -262,23 +311,11 @@ class Type {
     public ArrayList<Method> abstractMethods() {
         ArrayList<Method> inheritedAbstractMethods = superClass() == null ? new ArrayList<Method>()
                 : superClass().abstractMethods();
-        ArrayList<Method> inTinheritedAbstractMethods = new ArrayList<Method>();
-        if(interfacesClass() != null) {
-        	for(Type inter : interfacesClass()) {
-            	inTinheritedAbstractMethods.addAll(inter.abstractMethods());  
-        	}
-        }
         ArrayList<Method> abstractMethods = new ArrayList<Method>();
         ArrayList<Method> declaredConcreteMethods = declaredConcreteMethods();
         ArrayList<Method> declaredAbstractMethods = declaredAbstractMethods();
         abstractMethods.addAll(declaredAbstractMethods);
         for (Method method : inheritedAbstractMethods) {
-            if (!declaredConcreteMethods.contains(method)
-                    && !declaredAbstractMethods.contains(method)) {
-                abstractMethods.add(method);
-            }
-        }
-        for (Method method : inTinheritedAbstractMethods) {
             if (!declaredConcreteMethods.contains(method)
                     && !declaredAbstractMethods.contains(method)) {
                 abstractMethods.add(method);
