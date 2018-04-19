@@ -83,6 +83,17 @@ class JMethodDeclaration
         this.isStatic = mods.contains("static");
         this.isPrivate = mods.contains("private");
     }
+    
+    
+    /**
+     * Set method abstract, for interfaces
+     */
+    public void setAbstract() {
+    	if(!isAbstract) {
+    		mods.add("abstract");
+    		isAbstract = true;
+    	}
+    }
 
     /**
      * Declare this method in the parent (class) context.
@@ -175,19 +186,21 @@ class JMethodDeclaration
 		    }
         }
         
-        HashSet<Type> throwedExceptions = body.throwedExceptions();
-        if (throwedExceptions.size() != 0) {
-        	for(Type throwed : throwedExceptions) {
-        		boolean found = false;
-        		for(Type exp : exceptions) 
-            		if(exp.equals(throwed)) found = true;
-        		if(!found) {
-        			JAST.compilationUnit.reportSemanticError(line(),
-        				    "Exception throwed but not declared as throws");
+        if(body != null) {
+        	HashSet<Type> throwedExceptions = body.throwedExceptions();
+            if (throwedExceptions.size() != 0) {
+            	for(Type throwed : throwedExceptions) {
+            		boolean found = false;
+            		for(Type exp : exceptions) 
+                		if(exp.equals(throwed)) found = true;
+            		if(!found) {
+            			JAST.compilationUnit.reportSemanticError(line(),
+            				    "Exception throwed but not declared as throws");
+            		}
         		}
-    		}
+            }
         }
-        
+                
         return this;
     }
 

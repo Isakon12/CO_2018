@@ -3,6 +3,8 @@
 package jminusminus;
 
 import java.util.ArrayList;
+
+
 import static jminusminus.CLConstants.*;
 
 /**
@@ -126,6 +128,10 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         String qualifiedName = JAST.compilationUnit.packageName() == "" ? name
                 : JAST.compilationUnit.packageName() + "/" + name;
         CLEmitter partial = new CLEmitter(false);
+        ArrayList StringInterfaces = new ArrayList<String>();
+//        for (Type inter : superInterfaces) {
+//            StringInterfaces.add(inter.jvmName());
+//        }
         partial.addClass(mods, qualifiedName, Type.OBJECT.jvmName(), null,
                 false); // Object for superClass, just for now
         thisType = Type.typeFor(partial.toClass());
@@ -147,6 +153,14 @@ class JClassDeclaration extends JAST implements JTypeDecl {
 
         // Resolve superclass
         superType = superType.resolve(this.context);
+        
+        // Resolve superInterfaces
+        ArrayList typeTmp = new ArrayList<Type>();
+        for (Type inter : superInterfaces) {
+            inter = inter.resolve(this.context);
+            typeTmp.add(inter);
+        }
+        superInterfaces =  typeTmp;
 
         // Creating a partial class in memory can result in a
         // java.lang.VerifyError if the semantics below are
@@ -163,7 +177,11 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         // Add the class header to the partial class
         String qualifiedName = JAST.compilationUnit.packageName() == "" ? name
                 : JAST.compilationUnit.packageName() + "/" + name;
-        partial.addClass(mods, qualifiedName, superType.jvmName(), null, false);
+        ArrayList StringInterfaces = new ArrayList<String>();
+        for (Type inter : superInterfaces) {
+            StringInterfaces.add(inter.jvmName());
+        }
+        partial.addClass(mods, qualifiedName, superType.jvmName(), StringInterfaces, false);
 
         // Pre-analyze the members and add them to the partial
         // class

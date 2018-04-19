@@ -171,6 +171,22 @@ class Type {
         return classRep == null || classRep.getSuperclass() == null ? null
                 : typeFor(classRep.getSuperclass());
     }
+    
+    /**
+     * Return the Type's interfaces type (or null if there is none). Meaningful only
+     * to class Types.
+     * 
+     * @return the super type.
+     */
+
+    public ArrayList<Type> interfacesClass() {
+    	if(classRep == null || classRep.getInterfaces() == null)
+    		return null;
+    	ArrayList<Type> tmp = new ArrayList<Type>();
+    	for(Class<?> inter : classRep.getInterfaces())
+    		tmp.add(typeFor(inter));
+        return tmp;
+    }
   
 
     /**
@@ -246,11 +262,23 @@ class Type {
     public ArrayList<Method> abstractMethods() {
         ArrayList<Method> inheritedAbstractMethods = superClass() == null ? new ArrayList<Method>()
                 : superClass().abstractMethods();
+        ArrayList<Method> inTinheritedAbstractMethods = new ArrayList<Method>();
+        if(interfacesClass() != null) {
+        	for(Type inter : interfacesClass()) {
+            	inTinheritedAbstractMethods.addAll(inter.abstractMethods());  
+        	}
+        }
         ArrayList<Method> abstractMethods = new ArrayList<Method>();
         ArrayList<Method> declaredConcreteMethods = declaredConcreteMethods();
         ArrayList<Method> declaredAbstractMethods = declaredAbstractMethods();
         abstractMethods.addAll(declaredAbstractMethods);
         for (Method method : inheritedAbstractMethods) {
+            if (!declaredConcreteMethods.contains(method)
+                    && !declaredAbstractMethods.contains(method)) {
+                abstractMethods.add(method);
+            }
+        }
+        for (Method method : inTinheritedAbstractMethods) {
             if (!declaredConcreteMethods.contains(method)
                     && !declaredAbstractMethods.contains(method)) {
                 abstractMethods.add(method);
