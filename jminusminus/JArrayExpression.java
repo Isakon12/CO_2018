@@ -57,7 +57,8 @@ class JArrayExpression
         } else {
             this.type = theArray.type().componentType();
         }
-        indexExpr.type().mustMatchExpected(line(), Type.INT);
+        Type[] types = {Type.INT, Type.DOUBLE};
+        indexExpr.type().mustMatchOneOf(line(), types);
         return this;
     }
 

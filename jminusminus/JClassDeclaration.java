@@ -272,7 +272,12 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         // The class header
         String qualifiedName = JAST.compilationUnit.packageName() == "" ? name
                 : JAST.compilationUnit.packageName() + "/" + name;
-        output.addClass(mods, qualifiedName, superType.jvmName(), null, false);
+        ArrayList<String> stringInterfaces = new ArrayList<String>();
+        for(Type inter : superInterfaces) {
+        	stringInterfaces.add(inter.jvmName());
+        }
+        output.addClass(mods, qualifiedName, superType.jvmName(), 
+        		stringInterfaces, false);
 
         // The implicit empty constructor?
         if (!hasExplicitConstructor) {

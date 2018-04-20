@@ -932,9 +932,9 @@ public class Parser {
      * Parse a for loop.
      * 
      * <pre>
-     *   forLoop ::= LPAREN ((type variableDeclarator| expression) 
-     *   SEMI expression SEMI expression 
-     *   | type IDENTIFIER COLON IDENTIFIER) RPAREN statement
+     *   forLoop ::= LPAREN ((localVariableDeclarationStatement | expression SEMI) 
+     *   expression SEMI statementExpression | type IDENTIFIER COLON IDENTIFIER) 
+     *   RPAREN statement
      * </pre>
      * 
      * @return an AST for a for loop.
@@ -944,21 +944,20 @@ public class Parser {
         int line = scanner.token().line();
     	mustBe(LPAREN);
     	if(seeLocalVariableDeclaration()) {
-	    	Type init_type = type();
-	    	ArrayList<JVariableDeclarator> init = variableDeclarators(init_type);
-	    	if(init.size() == 1 && init.get(0).initializer() == null && have(COLON)) {
+	    	JVariableDeclaration init = loopVariableDeclarationStatement(); 
+	    	if(init.getDeclsNum() == 1 && init.getInitNum() == 0 && have(COLON)) {
 	    		String identifier = scanner.token().image();
 	            TypeName id = new TypeName(line, identifier);
 	            JVariable var = new JVariable(line, id.simpleName());
 	            scanner.next();
 	            mustBe(RPAREN);
 	            JStatement statement = statement();
-	            return new JForEachStatement(line, init.get(0), var, statement);
+	            return new JForEachStatement(line, init, var, statement);
 	    	}
-	        mustBe(SEMI);
+	    	mustBe(SEMI);
 	        JExpression test = expression();
 	        mustBe(SEMI);
-	        JExpression incr = expression();
+	        JStatement incr = statementExpression();
 	        mustBe(RPAREN);
 	        JStatement statement = statement();
 	        return new JForStatement(line, init, null, test, incr, statement);
@@ -967,7 +966,7 @@ public class Parser {
     	mustBe(SEMI);
         JExpression test = expression();
         mustBe(SEMI);
-        JExpression incr = expression();
+        JStatement incr = statementExpression();
         mustBe(RPAREN);
         JStatement statement = statement();
         return new JForStatement(line, null, init, test, incr, statement);
@@ -991,6 +990,25 @@ public class Parser {
         ArrayList<String> mods = new ArrayList<String>();
         ArrayList<JVariableDeclarator> vdecls = variableDeclarators(type());
         mustBe(SEMI);
+        return new JVariableDeclaration(line, mods, vdecls);
+    }
+    
+    /**
+     * Parse a loop variable declaration statement.
+     * 
+     * <pre>
+     *   loopVariableDeclarationStatement ::= type 
+     *                                           variableDeclarators 
+     *                                             
+     * </pre>
+     * 
+     * @return an AST for a variableDeclaration.
+     */
+
+    private JVariableDeclaration loopVariableDeclarationStatement() {
+        int line = scanner.token().line();
+        ArrayList<String> mods = new ArrayList<String>();
+        ArrayList<JVariableDeclarator> vdecls = variableDeclarators(type());
         return new JVariableDeclaration(line, mods, vdecls);
     }
 
@@ -1199,6 +1217,8 @@ public class Parser {
         JExpression expr = expression();
         if (expr instanceof JAssignment || expr instanceof JPreIncrementOp
                 || expr instanceof JPostDecrementOp
+                || expr instanceof JPreDecrementOp
+                || expr instanceof JPostIncrementOp
                 || expr instanceof JMessageExpression
                 || expr instanceof JSuperConstruction
                 || expr instanceof JThisConstruction || expr instanceof JNewOp

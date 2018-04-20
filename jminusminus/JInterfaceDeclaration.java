@@ -197,7 +197,20 @@ class JInterfaceDeclaration extends JAST implements JTypeDecl {
      */
 
     public void codegen(CLEmitter output) {
-      
+    	String qualifiedName = JAST.compilationUnit.packageName() == "" ? name
+                : JAST.compilationUnit.packageName() + "/" + name;
+    	ArrayList<String> stringInterfaces = new ArrayList<String>();
+        for(Type inter : superInterfaces) {
+        	stringInterfaces.add(inter.jvmName());
+        }
+        output.addClass(mods, qualifiedName, Type.OBJECT.jvmName(), 
+        		stringInterfaces, false);
+
+        // The members
+        for (JMember member : interfaceBlock) {
+            ((JAST) member).codegen(output);
+        }
+
     }
 
     /**
@@ -238,45 +251,6 @@ class JInterfaceDeclaration extends JAST implements JTypeDecl {
         }
         p.indentLeft();
         p.println("</JInterfaceDeclaration>");
-    }
-
-    /**
-     * Generate code for an implicit empty constructor. (Necessary only if there
-     * is not already an explicit one.)
-     * 
-     * @param partial
-     *            the code emitter (basically an abstraction for producing a
-     *            Java interface).
-     */
-
-    private void codegenPartialImplicitConstructor(CLEmitter partial) {
-    
-    }
-
-    /**
-     * Generate code for an implicit empty constructor. (Necessary only if there
-     * is not already an explicit one.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .interface file).
-     */
-
-    private void codegenImplicitConstructor(CLEmitter output) {
-      
-    }
-
-    /**
-     * Generate code for interface initialization, in j-- this means static field
-     * initializations.
-     * 
-     * @param output
-     *            the code emitter (basically an abstraction for producing the
-     *            .interface file).
-     */
-
-    private void codegenInterfaceInit(CLEmitter output) {
-        
     }
 
 }

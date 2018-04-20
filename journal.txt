@@ -81,9 +81,12 @@ http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.ph
 /// TODO
 	double
 	|| -= *= /= %= prefix-- postfix++
-	interface
 	static instance 
 	cond expresions
-	for foreach
+	foreach
 	exceptions
 	
+/// DONE
+	interface
+	for
+			

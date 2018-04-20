@@ -16,13 +16,13 @@ class JForStatement extends JStatement {
 	private JExpression init_expr;
 	
 	/** Variable **/
-	private ArrayList<JVariableDeclarator> init;
+	private JVariableDeclaration init;
 	
     /** Test expression. */
     private JExpression condition;
 
     /** Final expression. */
-    private JExpression incr;
+    private JStatement incr;
     
     /** The body. */
     private JStatement body;
@@ -44,8 +44,8 @@ class JForStatement extends JStatement {
      *            the body.
      */
 
-    public JForStatement(int line, ArrayList<JVariableDeclarator> init, 
-    		JExpression init_expr, JExpression condition, JExpression incr, 
+    public JForStatement(int line, JVariableDeclaration init, 
+    		JExpression init_expr, JExpression condition, JStatement incr, 
     		JStatement body) {
         super(line);
         this.init = init;
@@ -75,21 +75,11 @@ class JForStatement extends JStatement {
 
     public JForStatement analyze(Context context) {
 		this.context = new LocalContext(context);
-    	if(init != null) {
-    		ArrayList<JVariableDeclarator> tmp = new ArrayList<JVariableDeclarator>();
-    		for(JVariableDeclarator var : init) {
-        		var = (JVariableDeclarator) var.analyze(this.context);
-        		LocalVariableDefn defn = new LocalVariableDefn(var.type(), 
-                        this.context.nextOffset());
-                defn.initialize();
-                this.context.addEntry(var.line(), var.name(), defn);
-    		}
-    		init = tmp;
-    	}
+    	if(init != null) init = (JVariableDeclaration) init.analyze(this.context);
     	if(init_expr != null) init_expr = (JExpression) init_expr.analyze(this.context);
     	condition = condition.analyze(this.context);
         condition.type().mustMatchExpected(line(), Type.BOOLEAN);
-        incr = (JExpression) incr.analyze(this.context);
+        incr = (JStatement) incr.analyze(this.context);
         body = (JStatement) body.analyze(this.context);
     	return this;
     }
@@ -103,7 +93,32 @@ class JForStatement extends JStatement {
      */
 
     public void codegen(CLEmitter output) {
+        // Need two labels
+        String test = output.createLabel();
+        String out = output.createLabel();
 
+        //Initialization of the variables
+        if(init != null) init.codegen(output);
+        
+        //Initial expression
+        if(init_expr != null) init_expr.codegen(output);
+        
+        // Branch out of the loop on the test condition
+        // being false
+        output.addLabel(test);
+        condition.codegen(output, out, false);
+
+        // Codegen body
+        body.codegen(output);
+        
+        //Codegen increment expression
+        incr.codegen(output);
+
+        // Unconditional jump back up to test
+        output.addBranchInstruction(GOTO, test);
+
+        // The label below and outside the loop
+        output.addLabel(out);
     }
 
     /**
@@ -121,8 +136,7 @@ class JForStatement extends JStatement {
         if(init != null)  {
             p.printf("<InitVariable>\n");
             p.indentRight();
-            for(JVariableDeclarator var : init)
-            	var.writeToStdOut(p);
+            init.writeToStdOut(p);
             p.indentLeft();
             p.printf("</InitVariable>\n");
         }
@@ -149,7 +163,7 @@ class JForStatement extends JStatement {
         p.indentLeft();
         p.printf("</Body>\n");
         p.indentLeft();
-        p.printf("</JForeStatement>\n");
+        p.printf("</JForStatement>\n");
     }
 
 }

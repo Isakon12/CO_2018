@@ -41,8 +41,8 @@ abstract class JComparison extends JBooleanBinaryExpression {
     public JExpression analyze(Context context) {
         lhs = (JExpression) lhs.analyze(context);
         rhs = (JExpression) rhs.analyze(context);
-        if(lhs.type() != Type.DOUBLE)
-        	lhs.type().mustMatchExpected(line(), Type.INT);
+        Type[] types = {Type.INT, Type.DOUBLE};
+        lhs.type().mustMatchOneOf(line(), types);
         rhs.type().mustMatchExpected(line(), lhs.type());
         type = Type.BOOLEAN;
         return this;

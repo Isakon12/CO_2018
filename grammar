@@ -18,7 +18,7 @@ interfaceDeclaration ::= INTERFACE IDENTIFIER
 interfaceBody ::= LCURLY {modifiers intMemberDecl} RCURLY
 
 IntMemberDecl ::=  (VOID | type) IDENTIFIER  // method
-                 formalParameters [THROWS IDENTIFIER {COMMA IDENTIFIER}] SEMI
+                 formalParameters [THROWS qualifiedIdentifier {COMMA IDENTIFIER}] SEMI
                  | type variableDeclarators SEMI // field
 
 classDeclaration ::= CLASS IDENTIFIER 
@@ -62,11 +62,14 @@ formalParameter ::= type IDENTIFIER
 
 parExpression ::= LPAREN expression RPAREN
 
-forLoop ::= LPAREN ((type variableDeclarators | expression) 
-        SEMI expression SEMI expression 
-        | type IDENTIFIER COLON IDENTIFIER) RPAREN statement
+forLoop ::= LPAREN ((localVariableDeclarationStatement | expression) 
+        SEMI expression SEMI statementExpression | type IDENTIFIER COLON IDENTIFIER) 
+        RPAREN statement
 
 localVariableDeclarationStatement ::= type variableDeclarators SEMI
+
+loopVariableDeclarationStatement ::= type variableDeclarators
+
 
 variableDeclarators ::= variableDeclarator {COMMA variableDeclarator}
 

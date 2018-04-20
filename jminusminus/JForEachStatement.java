@@ -13,7 +13,7 @@ import java.util.HashSet;
 class JForEachStatement extends JStatement {
 
 	/** Variable **/
-	private JVariableDeclarator init;
+	private JVariableDeclaration init;
 	
     /** Final expression. */
     private JVariable identifier;
@@ -38,7 +38,7 @@ class JForEachStatement extends JStatement {
      *            the body.
      */
 
-    public JForEachStatement(int line, JVariableDeclarator init, 
+    public JForEachStatement(int line, JVariableDeclaration init, 
     		JVariable identifier, JStatement body) {
         super(line);
         this.init = init;
@@ -68,13 +68,9 @@ class JForEachStatement extends JStatement {
     	
     	this.context = new LocalContext(context);
     	
-    	init = (JVariableDeclarator) init.analyze(this.context);
-		LocalVariableDefn defn = new LocalVariableDefn(init.type(), 
-                this.context.nextOffset());
-        defn.initialize();
-        this.context.addEntry(init.line(), init.name(), defn);
+    	init = (JVariableDeclaration) init.analyze(this.context);
     	identifier = (JVariable) identifier.analyze(this.context);
-        init.type().mustMatchExpected(line(), identifier.type().componentType());
+        init.getVar().type().mustMatchExpected(line(), identifier.type().componentType());
     	return this;
     }
 
