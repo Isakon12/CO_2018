@@ -63,12 +63,13 @@ formalParameter ::= type IDENTIFIER
 parExpression ::= LPAREN expression RPAREN
 
 forLoop ::= LPAREN ((loopVariableDeclarationStatement | expression) 
-        SEMI expression SEMI statementExpression | type IDENTIFIER COLON IDENTIFIER) 
+		expression SEMI statementExpression | 
+		loopVariableDeclarationStatement IDENTIFIER) 
         RPAREN statement
 
 localVariableDeclarationStatement ::= type variableDeclarators SEMI
 
-loopVariableDeclarationStatement ::= type variableDeclarators
+loopVariableDeclarationStatement ::= type IDENTIFIER COLON
 
 
 variableDeclarators ::= variableDeclarator {COMMA variableDeclarator}

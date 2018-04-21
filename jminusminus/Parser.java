@@ -269,6 +269,62 @@ public class Parser {
     }
 
     /**
+     * Are we looking at a loop variable declaration? ie.
+     * 
+     * <pre>
+     *   type IDENTIFIER {LBRACK RBRACK} COLON
+     * </pre>
+     * 
+     * Look ahead to determine.
+     * 
+     * @return true iff we are looking at loop variable declaration; false
+     *         otherwise.
+     */
+
+    private boolean seeLoopVariableDeclaration() {
+        scanner.recordPosition();
+        if (have(IDENTIFIER)) {
+            // A qualified identifier is ok
+            while (have(DOT)) {
+                if (!have(IDENTIFIER)) {
+                    scanner.returnToPosition();
+                    return false;
+                }
+            }
+        } else if (seeBasicType()) {
+            scanner.next();
+        } else {
+            scanner.returnToPosition();
+            return false;
+        }
+        while (have(LBRACK)) {
+            if (!have(RBRACK)) {
+                scanner.returnToPosition();
+                return false;
+            }
+        }
+        if (!have(IDENTIFIER)) {
+            scanner.returnToPosition();
+            return false;
+        }
+        while (have(LBRACK)) {
+            if (!have(RBRACK)) {
+                scanner.returnToPosition();
+                return false;
+            }
+        }
+        
+        if (!have(COLON)) {
+        	scanner.returnToPosition();
+            return false;
+        }
+        
+        scanner.returnToPosition();
+        return true;
+    }
+
+    
+    /**
      * Are we looking at a basic type? ie.
      * 
      * <pre>
@@ -944,8 +1000,8 @@ public class Parser {
         int line = scanner.token().line();
     	mustBe(LPAREN);
     	if(seeLocalVariableDeclaration()) {
-	    	JVariableDeclaration init = loopVariableDeclarationStatement(); 
-	    	if(init.getDeclsNum() == 1 && init.getInitNum() == 0 && have(COLON)) {
+	    	if(seeLoopVariableDeclaration()) {
+		    	JVariableDeclaration init = loopVariableDeclarationStatement(); 
 	    		String identifier = scanner.token().image();
 	            TypeName id = new TypeName(line, identifier);
 	            JVariable var = new JVariable(line, id.simpleName());
@@ -954,7 +1010,7 @@ public class Parser {
 	            JStatement statement = statement();
 	            return new JForEachStatement(line, init, var, statement);
 	    	}
-	    	mustBe(SEMI);
+	    	JVariableDeclaration init = localVariableDeclarationStatement(); 
 	        JExpression test = expression();
 	        mustBe(SEMI);
 	        JStatement incr = statementExpression();
@@ -999,6 +1055,7 @@ public class Parser {
      * <pre>
      *   loopVariableDeclarationStatement ::= type 
      *                                           variableDeclarators 
+     *                                           	COLON
      *                                             
      * </pre>
      * 
@@ -1009,6 +1066,7 @@ public class Parser {
         int line = scanner.token().line();
         ArrayList<String> mods = new ArrayList<String>();
         ArrayList<JVariableDeclarator> vdecls = variableDeclarators(type());
+        mustBe(COLON);
         return new JVariableDeclaration(line, mods, vdecls);
     }
 

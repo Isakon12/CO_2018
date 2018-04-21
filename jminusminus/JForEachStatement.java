@@ -3,6 +3,7 @@
 package jminusminus;
 
 import static jminusminus.CLConstants.*;
+import java.util.ArrayList;
 
 import java.util.HashSet;
 
@@ -21,6 +22,12 @@ class JForEachStatement extends JStatement {
     /** The body. */
     private JStatement body;
     
+    /** Artificial nodes */
+    private JVariableDeclaration init_iterator;
+    private JExpression condition_iterator;
+    private JStatement incr_iterator;
+    private JStatement init_var;
+    
     /**
      * The new context (built in analyze()) represented by this block.
      */
@@ -37,13 +44,33 @@ class JForEachStatement extends JStatement {
      * @param body
      *            the body.
      */
-
+    
     public JForEachStatement(int line, JVariableDeclaration init, 
     		JVariable identifier, JStatement body) {
         super(line);
         this.init = init;
+        this.init.getVar().setInitializer(new JLiteralInt(line,"0"));
         this.identifier = identifier;
         this.body = body;
+        
+        //Artificial nodes
+        String string_var = "iterator";
+        JVariable var= new JVariable(line,string_var);
+        
+        ArrayList<JVariableDeclarator> it = new ArrayList<JVariableDeclarator>();
+        it.add(new JVariableDeclarator(line,string_var,Type.INT,
+        		new JLiteralInt(line,"0")));
+        init_iterator = new JVariableDeclaration(line,new ArrayList<String>(),it);
+        
+        JFieldSelection it_length = new JFieldSelection(line,identifier,"length");
+        JExpression it_len_1 = new JSubtractOp(line,it_length,new JLiteralInt(line,"1"));
+        condition_iterator = new JLessEqualOp(line,var,it_len_1);
+        
+        incr_iterator = new JPlusAssignOp(line,var,new JLiteralInt(line,"1"));
+        
+        JExpression ident_value = new JArrayExpression(line,identifier,var);
+        init_var = new JAssignOp(line,new JVariable(line,
+        		init.getVar().name()),ident_value);
     }
     
     /**
@@ -71,7 +98,14 @@ class JForEachStatement extends JStatement {
     	init = (JVariableDeclaration) init.analyze(this.context);
     	identifier = (JVariable) identifier.analyze(this.context);
         init.getVar().type().mustMatchExpected(line(), identifier.type().componentType());
-    	return this;
+    	body = (JStatement) body.analyze(this.context);
+        
+        //Artificial nodes
+        init_iterator.analyze(this.context);
+        condition_iterator.analyze(this.context);
+        incr_iterator.analyze(this.context);
+        init_var.analyze(this.context);
+        return this;
     }
 
     /**
@@ -83,7 +117,29 @@ class JForEachStatement extends JStatement {
      */
 
     public void codegen(CLEmitter output) {
+        // Need two labels
+        String test = output.createLabel();
+        String out = output.createLabel();
+        
+        init_iterator.codegen(output);
+        
+        // Branch out of the loop on the test condition
+        // being false
+        output.addLabel(test);
+        condition_iterator.codegen(output, out, false);
+        
+        init_var.codegen(output);
 
+        // Codegen body
+        body.codegen(output);
+        
+        incr_iterator.codegen(output);
+
+        // Unconditional jump back up to test
+        output.addBranchInstruction(GOTO, test);
+
+        // The label below and outside the loop
+        output.addLabel(out);
     }
 
     /**

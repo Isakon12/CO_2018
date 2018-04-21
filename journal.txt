@@ -1,6 +1,7 @@
 http://www.javacodex.com/Operators/Operator-Precedence-Examples
 https://cs.au.dk/~mis/dOvs/jvmspec/ref-Java.html
 http://www.w3processing.com/index.php?subMenuLoad=java/intro/OperatorsSummary.php
+https://stackoverflow.com/questions/23291670/is-foreach-loop-literally-rewritten-to-a-for-loop-with-iterator
 
 --> STEP 0
 /// DONE 
