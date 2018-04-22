@@ -80,14 +80,13 @@ https://stackoverflow.com/questions/23291670/is-foreach-loop-literally-rewritten
 
 --> STEP 5
 /// TODO
-	double
+	double (arrays, binary, assigns, post/pre)
 	|| -= *= /= %= prefix-- postfix++
 	static instance 
 	cond expresions
-	foreach
 	exceptions
 	
 /// DONE
 	interface
-	for
+	for foreach
 			

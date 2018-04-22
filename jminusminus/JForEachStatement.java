@@ -54,8 +54,8 @@ class JForEachStatement extends JStatement {
         this.body = body;
         
         //Artificial nodes
-        String string_var = "iterator";
-        JVariable var= new JVariable(line,string_var);
+        String string_var = "0iterator";
+        JVariable var = new JVariable(line,string_var);
         
         ArrayList<JVariableDeclarator> it = new ArrayList<JVariableDeclarator>();
         it.add(new JVariableDeclarator(line,string_var,Type.INT,
@@ -66,11 +66,15 @@ class JForEachStatement extends JStatement {
         JExpression it_len_1 = new JSubtractOp(line,it_length,new JLiteralInt(line,"1"));
         condition_iterator = new JLessEqualOp(line,var,it_len_1);
         
-        incr_iterator = new JPlusAssignOp(line,var,new JLiteralInt(line,"1"));
+        JExpression it_plus_1 = new JPlusAssignOp(line,var,new JLiteralInt(line,"1"));
+        it_plus_1.isStatementExpression = true;
+        incr_iterator = new JStatementExpression(line,it_plus_1);
         
         JExpression ident_value = new JArrayExpression(line,identifier,var);
-        init_var = new JAssignOp(line,new JVariable(line,
+        JExpression asign = new JAssignOp(line,new JVariable(line,
         		init.getVar().name()),ident_value);
+        asign.isStatementExpression = true;
+        init_var = new JStatementExpression(line,asign);
     }
     
     /**
@@ -101,10 +105,10 @@ class JForEachStatement extends JStatement {
     	body = (JStatement) body.analyze(this.context);
         
         //Artificial nodes
-        init_iterator.analyze(this.context);
-        condition_iterator.analyze(this.context);
-        incr_iterator.analyze(this.context);
-        init_var.analyze(this.context);
+        init_iterator = (JVariableDeclaration) init_iterator.analyze(this.context);
+        condition_iterator = (JExpression) condition_iterator.analyze(this.context);
+        incr_iterator = (JStatement) incr_iterator.analyze(this.context);
+        init_var = (JStatement) init_var.analyze(this.context);
         return this;
     }
 
