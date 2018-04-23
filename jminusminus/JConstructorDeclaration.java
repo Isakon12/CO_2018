@@ -93,7 +93,7 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
         MethodContext methodContext =
             new MethodContext(context, isStatic, returnType);
         this.context = methodContext;
-
+        
         if (!isStatic) {
             // Offset 0 is used to address "this"
             this.context.nextOffset();
@@ -156,6 +156,11 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
         for (JFieldDeclaration field : definingClass
                 .instanceFieldInitializations()) {
             field.codegenInitializations(output);
+        }
+        // Instance block initializations
+        for (JBlockDeclaration block : definingClass
+                .instanceBlockInitializations()) {
+            block.codegen(output);
         }
         // And then the body
         body.codegen(output);

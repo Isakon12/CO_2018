@@ -58,6 +58,16 @@ class JBlockDeclaration extends JAST implements JMember {
         this.isProtected = mods.contains("protected");
         this.isAbstract = mods.contains("abstract");
     }
+    
+    /**
+     * Return the list of modifiers.
+     * 
+     * @return list of modifiers.
+     */
+
+    public ArrayList<String> mods() {
+        return mods;
+    }
 
     /**
      * Declare this block in the parent (class) context.
@@ -91,20 +101,6 @@ class JBlockDeclaration extends JAST implements JMember {
     }
 
     /**
-     * Add this method declaration to the partial class.
-     * 
-     * @param context
-     *                the parent (class) context.
-     * @param partial
-     *                the code emitter (basically an abstraction
-     *                for producing the partial class).
-     */
-
-    public void partialCodegen(Context context, CLEmitter partial) {
-        
-    }
-
-    /**
      * Generate code for the method declaration.
      * 
      * @param output
@@ -113,8 +109,9 @@ class JBlockDeclaration extends JAST implements JMember {
      */
 
     public void codegen(CLEmitter output) {
-
-       
+    	if(body != null) {
+        	body.codegen(output);
+        }
     }
 
     /**
