@@ -250,7 +250,7 @@ class JPostDecrementOp extends JUnaryExpression {
      */
 
     public void codegen(CLEmitter output) {
-        if (arg instanceof JVariable) {
+        if (arg instanceof JVariable && type == Type.INT) {
             // A local variable; otherwise analyze() would
             // have replaced it with an explicit field selection.
             int offset = ((LocalVariableDefn) ((JVariable) arg).iDefn())

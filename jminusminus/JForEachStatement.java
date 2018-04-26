@@ -49,9 +49,17 @@ class JForEachStatement extends JStatement {
     		JVariable identifier, JStatement body) {
         super(line);
         this.init = init;
-        this.init.getVar().setInitializer(new JLiteralNull(line));
         this.identifier = identifier;
         this.body = body;
+        
+        if(init.getVar().type() == Type.INT)
+        	this.init.getVar().setInitializer(new JLiteralInt(line,"0"));
+        else if (init.getVar().type() == Type.DOUBLE) 
+        	this.init.getVar().setInitializer(new JLiteralDouble(line,"0.0"));
+        else
+        	this.init.getVar().setInitializer(new JLiteralNull(line));
+        
+
         
         //Artificial nodes
         String string_var = "0iterator";
