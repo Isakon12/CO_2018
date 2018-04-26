@@ -651,7 +651,7 @@ public class Parser {
      * 
      * <pre>
      * IntMemberDecl ::=  (VOID | type) IDENTIFIER  // method
-     *           formalParameters [THROWS IDENTIFIER {COMMA IDENTIFIER}] SEMI
+     *           formalParameters [THROWS qualifiedIdentifier {COMMA qualifiedIdentifier}] SEMI
      *           | type variableDeclarators SEMI // field
      * </pre>
      * 
@@ -712,10 +712,9 @@ public class Parser {
      * 
      * <pre>
      *   memberDecl ::= IDENTIFIER            // constructor
-     *                    formalParameters 
-     *                    block
+     *                    formalParameters [THROWS qualifiedIdentifier {COMMA qualifiedIdentifier}] block
      *                | (VOID | type) IDENTIFIER  // method
-     *                    formalParameters [THROWS IDENTIFIER {COMMA IDENTIFIER}]
+     *                    formalParameters [THROWS qualifiedIdentifier {COMMA qualifiedIdentifier}]
      *                    (block | SEMI)
      *                | block
      *                | type variableDeclarators SEMI
@@ -988,9 +987,10 @@ public class Parser {
      * Parse a for loop.
      * 
      * <pre>
-     *   forLoop ::= LPAREN ((localVariableDeclarationStatement | expression SEMI) 
-     *   expression SEMI statementExpression | type IDENTIFIER COLON IDENTIFIER) 
-     *   RPAREN statement
+     *   forLoop ::= LPAREN ((localVariableDeclarationStatement | expression) 
+		expression SEMI statementExpression | 
+		loopVariableDeclarationStatement IDENTIFIER) 
+        RPAREN statement
      * </pre>
      * 
      * @return an AST for a for loop.
