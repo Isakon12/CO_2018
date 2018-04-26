@@ -49,7 +49,7 @@ class JForEachStatement extends JStatement {
     		JVariable identifier, JStatement body) {
         super(line);
         this.init = init;
-        this.init.getVar().setInitializer(new JLiteralInt(line,"0"));
+        this.init.getVar().setInitializer(new JLiteralNull(line));
         this.identifier = identifier;
         this.body = body;
         
