@@ -80,7 +80,7 @@ https://stackoverflow.com/questions/23291670/is-foreach-loop-literally-rewritten
 
 --> STEP 5
 /// TODO
-	double (arrays, binary, assigns, post/pre)
+	double (arrays, , , post/pre)
 	|| -= *= /= %= prefix-- postfix++
 	cond expresions
 	exceptions

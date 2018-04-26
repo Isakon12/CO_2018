@@ -266,63 +266,7 @@ public class Parser {
         }
         scanner.returnToPosition();
         return true;
-    }
-
-    /**
-     * Are we looking at a loop variable declaration? ie.
-     * 
-     * <pre>
-     *   type IDENTIFIER {LBRACK RBRACK} COLON
-     * </pre>
-     * 
-     * Look ahead to determine.
-     * 
-     * @return true iff we are looking at loop variable declaration; false
-     *         otherwise.
-     */
-
-    private boolean seeLoopVariableDeclaration() {
-        scanner.recordPosition();
-        if (have(IDENTIFIER)) {
-            // A qualified identifier is ok
-            while (have(DOT)) {
-                if (!have(IDENTIFIER)) {
-                    scanner.returnToPosition();
-                    return false;
-                }
-            }
-        } else if (seeBasicType()) {
-            scanner.next();
-        } else {
-            scanner.returnToPosition();
-            return false;
-        }
-        while (have(LBRACK)) {
-            if (!have(RBRACK)) {
-                scanner.returnToPosition();
-                return false;
-            }
-        }
-        if (!have(IDENTIFIER)) {
-            scanner.returnToPosition();
-            return false;
-        }
-        while (have(LBRACK)) {
-            if (!have(RBRACK)) {
-                scanner.returnToPosition();
-                return false;
-            }
-        }
-        
-        if (!have(COLON)) {
-        	scanner.returnToPosition();
-            return false;
-        }
-        
-        scanner.returnToPosition();
-        return true;
-    }
-
+    }  
     
     /**
      * Are we looking at a basic type? ie.
@@ -650,7 +594,7 @@ public class Parser {
      * Parse a member declaration.
      * 
      * <pre>
-     * IntMemberDecl ::=  (VOID | type) IDENTIFIER  // method
+     * intMemberDecl ::=  (VOID | type) IDENTIFIER  // method
      *           formalParameters [THROWS qualifiedIdentifier {COMMA qualifiedIdentifier}] SEMI
      *           | type variableDeclarators SEMI // field
      * </pre>
@@ -987,10 +931,14 @@ public class Parser {
      * Parse a for loop.
      * 
      * <pre>
-     *   forLoop ::= LPAREN ((localVariableDeclarationStatement | expression) 
-		expression SEMI statementExpression | 
-		loopVariableDeclarationStatement IDENTIFIER) 
-        RPAREN statement
+     *   forLoop ::= LPAREN 
+     *   (loopVariableDeclarationStatement 
+     *   	(SEMI expression SEMI statementExpression // For Statement with var declarator
+     *   	| COLON IDENTIFIER //For each statement
+     *    	) 
+	 *   | expression SEMI expression SEMI statementExpression //For statement with expr
+	 *   ) 
+     *   RPAREN statement
      * </pre>
      * 
      * @return an AST for a for loop.
@@ -1000,8 +948,8 @@ public class Parser {
         int line = scanner.token().line();
     	mustBe(LPAREN);
     	if(seeLocalVariableDeclaration()) {
-	    	if(seeLoopVariableDeclaration()) {
-		    	JVariableDeclaration init = loopVariableDeclarationStatement(); 
+    		JVariableDeclaration init = loopVariableDeclarationStatement();
+	    	if(have(COLON)) {
 	    		String identifier = scanner.token().image();
 	            TypeName id = new TypeName(line, identifier);
 	            JVariable var = new JVariable(line, id.simpleName());
@@ -1010,7 +958,7 @@ public class Parser {
 	            JStatement statement = statement();
 	            return new JForEachStatement(line, init, var, statement);
 	    	}
-	    	JVariableDeclaration init = localVariableDeclarationStatement(); 
+	    	mustBe(SEMI);
 	        JExpression test = expression();
 	        mustBe(SEMI);
 	        JStatement incr = statementExpression();
@@ -1055,7 +1003,6 @@ public class Parser {
      * <pre>
      *   loopVariableDeclarationStatement ::= type 
      *                                           variableDeclarators 
-     *                                           	COLON
      *                                             
      * </pre>
      * 
@@ -1066,7 +1013,7 @@ public class Parser {
         int line = scanner.token().line();
         ArrayList<String> mods = new ArrayList<String>();
         ArrayList<JVariableDeclarator> vdecls = variableDeclarators(type());
-        mustBe(COLON);
+        //mustBe(COLON);
         return new JVariableDeclaration(line, mods, vdecls);
     }
 
@@ -1312,8 +1259,7 @@ public class Parser {
      *       conditionalExpression // level 13
      *           [( ASSIGN  // conditionalExpression
      *            PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN //Must be a valid lhs
-                  | DIV_ASSIGN | REM_ASSIGN
-     *            )
+     *            | DIV_ASSIGN | REM_ASSIGN)
      *            assignmentExpression]
      * </pre>
      * 

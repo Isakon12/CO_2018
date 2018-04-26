@@ -17,7 +17,7 @@ interfaceDeclaration ::= INTERFACE IDENTIFIER
                        
 interfaceBody ::= LCURLY {modifiers intMemberDecl} RCURLY
 
-IntMemberDecl ::=  (VOID | type) IDENTIFIER  // method
+intMemberDecl ::=  (VOID | type) IDENTIFIER  // method
                  formalParameters [THROWS qualifiedIdentifier {COMMA qualifiedIdentifier}] SEMI
                  | type variableDeclarators SEMI // field
 
@@ -42,7 +42,7 @@ blockStatement ::= localVariableDeclarationStatement
 				 | exceptionThrow
                  | statement
                  
-thorwException ::= THORW NEW quealifiedIdentifer [arguments] SEMI
+exceptionThrow ::= THORW NEW quealifiedIdentifer [arguments] SEMI
 
 statement ::= block
             | IF parExpression statement [ELSE statement]
@@ -62,10 +62,14 @@ formalParameter ::= type IDENTIFIER
 
 parExpression ::= LPAREN expression RPAREN
 
-forLoop ::= LPAREN ((localVariableDeclarationStatement | expression) 
-		expression SEMI statementExpression | 
-		loopVariableDeclarationStatement IDENTIFIER) 
-        RPAREN statement
+forLoop ::= LPAREN 
+   (loopVariableDeclarationStatement 
+   	(SEMI expression SEMI statementExpression // For Statement with var declarator
+   	| COLON IDENTIFIER //For each statement
+    	) 
+   | expression SEMI expression SEMI statementExpression //For statement with expr
+   ) 
+   RPAREN statement
 
 localVariableDeclarationStatement ::= type variableDeclarators SEMI
 
@@ -97,8 +101,7 @@ expression ::= assignmentExpression
 
 assignmentExpression ::= conditionalExpression  // must be a valid lhs level 13
                            [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN 
-                           | DIV_ASSIGN | REM_ASSIGN | ARSHIFT_ASN | ALSHIFT_ASN
-                           | LRSHIFT_ASN | EOR_ASSIGN | IOR_ASSIGN | AND_ASSIGN) 
+                           | DIV_ASSIGN | REM_ASSIGN) 
                            assignmentExpression]
                            
 conditionalExpression :: = logicalOrExpression // level 12
@@ -123,7 +126,7 @@ equalityExpression ::= relationalExpression  // level 6
                          {(EQUAL | NOT_EQUAL) relationalExpression}
 
 relationalExpression ::= shiftExpresion       // level 5
-                           [(GT | LE | LT | GE) shiftExpresion
+                           [(GT | LE) shiftExpresion
                            | INSTANCEOF referenceType]
                            
 shiftExpresion :: = additiveExpresion 			// level 4
@@ -168,6 +171,5 @@ creator ::= (basicType | qualifiedIdentifier)
 newArrayDeclarator ::= LBRACK expression RBRACK 
                          {LBRACK expression RBRACK} {LBRACK RBRACK}
 
-literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL
-          | LONG_LITERAL | FLOAT_LITERAL | DOUBLE_LITERAL
+literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL | DOUBLE_LITERAL
           | TRUE        | FALSE        | NULL

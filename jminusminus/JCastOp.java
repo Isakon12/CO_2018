@@ -134,6 +134,8 @@ class Conversions {
         put(Type.INT, Type.BOXED_INT, new Boxing(Type.INT, Type.BOXED_INT));
         put(Type.BOOLEAN, Type.BOXED_BOOLEAN, new Boxing(Type.BOOLEAN,
                 Type.BOXED_BOOLEAN));
+        put(Type.DOUBLE, Type.BOXED_DOUBLE, new Boxing(Type.DOUBLE,
+                Type.BOXED_DOUBLE));
 
         // Un-boxing
         put(Type.BOXED_CHAR, Type.CHAR, new UnBoxing(Type.BOXED_CHAR,
@@ -142,6 +144,8 @@ class Conversions {
                 "intValue"));
         put(Type.BOXED_BOOLEAN, Type.BOOLEAN, new UnBoxing(Type.BOXED_BOOLEAN,
                 Type.BOOLEAN, "booleanValue"));
+        put(Type.BOXED_DOUBLE, Type.DOUBLE, new UnBoxing(Type.BOXED_DOUBLE,
+                Type.DOUBLE, "doubleValue"));
     }
 
     /**

@@ -267,9 +267,15 @@ class JPostDecrementOp extends JUnaryExpression {
                 // Loading its original rvalue
                 ((JLhs) arg).codegenDuplicateRvalue(output);
             }
-            output.addNoArgInstruction(ICONST_1);
-            output.addNoArgInstruction(ISUB);
-            ((JLhs) arg).codegenStore(output);
+        	if(type == Type.INT) {
+	            output.addNoArgInstruction(ICONST_1);
+	            output.addNoArgInstruction(ISUB);
+	            ((JLhs) arg).codegenStore(output);
+	        } else if (type == Type.DOUBLE) {
+	            output.addNoArgInstruction(DCONST_1);
+	            output.addNoArgInstruction(DSUB);
+	            ((JLhs) arg).codegenStore(output);
+	        }
         }
     }
 
@@ -423,8 +429,13 @@ class JPreIncrementOp extends JUnaryExpression {
         } else {
             ((JLhs) arg).codegenLoadLhsLvalue(output);
             ((JLhs) arg).codegenLoadLhsRvalue(output);
-            output.addNoArgInstruction(ICONST_1);
-            output.addNoArgInstruction(IADD);
+            if(type == Type.INT) {
+	            output.addNoArgInstruction(ICONST_1);
+	            output.addNoArgInstruction(IADD);
+	        } else if (type == Type.DOUBLE) {
+	        	output.addNoArgInstruction(DCONST_1);
+	            output.addNoArgInstruction(DADD);
+	        }
             if (!isStatementExpression) {
                 // Loading its original rvalue
                 ((JLhs) arg).codegenDuplicateRvalue(output);
