@@ -246,7 +246,11 @@ class JMethodDeclaration
      */
 
     public void codegen(CLEmitter output) {
-        output.addMethod(mods, name, descriptor, null, false);
+    	ArrayList<String> stringExceptions = new ArrayList<String>();
+        for(Type exp : exceptions) {
+        	stringExceptions.add(exp.jvmName());
+        }  
+        output.addMethod(mods, name, descriptor, stringExceptions, false);
         if (body != null) {
             body.codegen(output);
         }

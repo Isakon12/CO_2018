@@ -19,7 +19,6 @@ https://stackoverflow.com/questions/23291670/is-foreach-loop-literally-rewritten
 
 --> STEP 1
 /// TODO	
-	Grammar (Reserved words)
 	
 /// DONE	
 	Multi-line comments
@@ -80,13 +79,13 @@ https://stackoverflow.com/questions/23291670/is-foreach-loop-literally-rewritten
 
 --> STEP 5
 /// TODO
-	double (arrays, , , post/pre)
 	|| -= *= /= %= prefix-- postfix++
 	cond expresions
-	exceptions
 	
 /// DONE
 	interface
 	static instance 
 	for foreach
+	double 
+	exceptions
 			

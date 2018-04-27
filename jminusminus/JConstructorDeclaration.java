@@ -145,7 +145,11 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
      */
 
     public void codegen(CLEmitter output) {
-        output.addMethod(mods, "<init>", descriptor, null, false);
+    	ArrayList<String> stringExceptions = new ArrayList<String>();
+        for(Type exp : exceptions) {
+        	stringExceptions.add(exp.jvmName());
+        }  	
+        output.addMethod(mods, "<init>", descriptor, stringExceptions, false);
         if (!invokesConstructor) {
             output.addNoArgInstruction(ALOAD_0);
             output.addMemberAccessInstruction(INVOKESPECIAL,

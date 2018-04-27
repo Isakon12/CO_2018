@@ -2,6 +2,8 @@
 
 package jminusminus;
 
+import static jminusminus.CLConstants.ATHROW;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -12,6 +14,9 @@ class JExceptionThrow extends JStatement {
 
     /** Type name */
     private Type name;
+    
+    /** New exception */
+    private JNewOp exception;
 
     /**
      * Construct an AST node for a throw exception given the line number,
@@ -31,6 +36,8 @@ class JExceptionThrow extends JStatement {
         super(line);
         this.name = name;
         this.args = args;
+        
+        exception = new JNewOp(line, name, args);
     }
 
     /**
@@ -44,6 +51,7 @@ class JExceptionThrow extends JStatement {
 
     public JStatement analyze(Context context) {
     	name = name.resolve(context);
+    	exception = (JNewOp) exception.analyze(context);
         return this;
     }
 
@@ -67,7 +75,8 @@ class JExceptionThrow extends JStatement {
      */
 
     public void codegen(CLEmitter output) {
-
+    	exception.codegen(output);
+    	output.addNoArgInstruction(ATHROW);
     }
 
     /**

@@ -25,6 +25,9 @@ class JTryCatchStatement extends JStatement {
     /** Else clause. */
     private JBlock finallyPart;
     
+    /** Exception captured offset for the catch blocks */
+    private int offset;
+    
     /**
      * The new context (built in analyze()) represented by this block.
      */
@@ -64,7 +67,8 @@ class JTryCatchStatement extends JStatement {
             HashSet<Type> innerExceptions = catchBlocks.throwedExceptions();
             tmp.addAll(innerExceptions);
         }
-        tmp.addAll(finallyPart.throwedExceptions());
+        if(finallyPart != null)
+        	tmp.addAll(finallyPart.throwedExceptions());
         return tmp;
     }
 
@@ -78,7 +82,7 @@ class JTryCatchStatement extends JStatement {
      */
 
     public JStatement analyze(Context context) {
-        tryPart = tryPart.analyze(context);
+         tryPart = tryPart.analyze(context);
         
         ArrayList<Type> typeTmp = new ArrayList<Type>();
         // Resolve types of the formal parameters
@@ -102,7 +106,10 @@ class JTryCatchStatement extends JStatement {
             
         }
         catchPart = catchPartTmp;
-        finallyPart = finallyPart.analyze(context);
+        offset = this.context.get(0).offset() - 1;
+        
+        if(finallyPart != null)
+        	finallyPart = finallyPart.analyze(context);
         return this;
     }
 
@@ -117,6 +124,74 @@ class JTryCatchStatement extends JStatement {
      */
 
     public void codegen(CLEmitter output) {
+
+        String startLabel = output.createLabel();
+        String endLabel = output.createLabel();
+        String finallyLabel = output.createLabel();
+        String outLabel = output.createLabel();
+    	
+        output.addLabel(startLabel);
+        
+    	tryPart.codegen(output);
+    	
+        output.addLabel(endLabel);
+        
+        if(finallyPart != null)
+        	finallyPart.codegen(output);
+        
+        output.addBranchInstruction(GOTO, outLabel);
+    	
+    	for (int i = 0; i < exception.size(); i++) {
+    		//Catch
+    		String handlerLabel = output.createLabel();
+    		String endHandlerLabel = output.createLabel();
+    		
+    		output.addExceptionHandler(startLabel,endLabel,handlerLabel,
+    				exception.get(i).type().jvmName());
+    		
+            output.addLabel(handlerLabel);
+            
+            switch (offset) {
+            case 0:
+                output.addNoArgInstruction(ASTORE_0);
+                break;
+            case 1:
+                output.addNoArgInstruction(ASTORE_1);
+                break;
+            case 2:
+                output.addNoArgInstruction(ASTORE_2);
+                break;
+            case 3:
+                output.addNoArgInstruction(ASTORE_3);
+                break;
+            default:
+                output.addOneArgInstruction(ASTORE, offset);
+                break;
+            }
+            
+            catchPart.get(i).codegen(output);      
+            if(finallyPart != null) {
+            	output.addLabel(endHandlerLabel);
+            	output.addExceptionHandler(handlerLabel,endHandlerLabel,
+            			finallyLabel,null);
+            }
+            
+            if(finallyPart != null)
+            	finallyPart.codegen(output);
+            
+            output.addBranchInstruction(GOTO, outLabel);
+        }
+    	
+    	if(finallyPart != null) {
+        	output.addLabel(finallyLabel);    		
+    		
+    		finallyPart.codegen(output);
+        	output.addNoArgInstruction(ATHROW);
+        	output.addExceptionHandler(startLabel,endLabel,finallyLabel,null);
+    	}
+    	
+    	output.addLabel(outLabel);
+    	
         
     }
 
