@@ -79,7 +79,7 @@ https://stackoverflow.com/questions/23291670/is-foreach-loop-literally-rewritten
 
 --> STEP 5
 /// TODO
-	|| -= *= /= %= prefix-- postfix++
+	
 	cond expresions
 	
 /// DONE
@@ -88,4 +88,5 @@ https://stackoverflow.com/questions/23291670/is-foreach-loop-literally-rewritten
 	for foreach
 	double 
 	exceptions
+	|| -= *= /= %= prefix-- postfix++
 			

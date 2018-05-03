@@ -129,7 +129,7 @@ relationalExpression ::= shiftExpresion       // level 5
                            [(GT | LE) shiftExpresion
                            | INSTANCEOF referenceType]
                            
-shiftExpresion :: = additiveExpresion 			// level 4
+shiftExpression :: = additiveExpression 			// level 4
 							[(ARSHIFT | ALSHIFT | RSHIFT)] additiveExpresion                           
 
 additiveExpression ::= multiplicativeExpression // level 3
