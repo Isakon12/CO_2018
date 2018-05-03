@@ -92,7 +92,14 @@ class JTryCatchStatement extends JStatement {
             	param.type().mustNotMatchExpected(line,t);
             }
             typeTmp.add(param.type());
-        }    
+        }
+        
+        for (JFormalParameter param : exception) {
+            if(!(Throwable.class.isAssignableFrom(param.type().classRep()))) {
+            	JAST.compilationUnit.reportSemanticError(line(),
+    				    "Catch parameter must be throwable");
+            }
+        }
         
         ArrayList<JBlock> catchPartTmp = new ArrayList<JBlock>();
         ArrayList<JFormalParameter> exceptionTmp = new ArrayList<JFormalParameter>();
@@ -151,6 +158,7 @@ class JTryCatchStatement extends JStatement {
     		
             output.addLabel(handlerLabel);
             
+            //Read the exception
             switch (offset) {
             case 0:
                 output.addNoArgInstruction(ASTORE_0);

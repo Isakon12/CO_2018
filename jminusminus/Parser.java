@@ -1291,7 +1291,7 @@ public class Parser {
      * 
      * <pre>
      *   ternaryExpression :: = logicalOrExpression // level 12
-							{Q_MARK expression COLON expression logicalOrExpression}
+							{Q_MARK conditionalExpression COLON expression}
      * </pre>
      * 
      * @return an AST for a conditionalExpression.
@@ -1299,20 +1299,16 @@ public class Parser {
 
     private JExpression conditionalExpression() {
         int line = scanner.token().line();
-        boolean more = true;
         JExpression lhs = logicalOrExpression();
-        while (more) {
-            if (have(Q_MARK)) {
-            	JExpression trueCond = expression();
-            	mustBe(COLON);
-            	JExpression falseCond = expression();
-                lhs = new JConditionalExprOp(line, lhs, trueCond, 
-                		falseCond); 
-            } else {
-                more = false;
-            }
+        if (have(Q_MARK)) {
+        	JExpression trueCond = conditionalExpression();
+        	mustBe(COLON);
+        	JExpression falseCond = conditionalExpression();
+            return new JConditionalExprOp(line, lhs, trueCond, 
+            		falseCond); 
+        } else {
+            return lhs;
         }
-        return lhs;
     }
     
     

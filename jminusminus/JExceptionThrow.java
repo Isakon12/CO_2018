@@ -52,6 +52,10 @@ class JExceptionThrow extends JStatement {
     public JStatement analyze(Context context) {
     	name = name.resolve(context);
     	exception = (JNewOp) exception.analyze(context);
+        if(!(Throwable.class.isAssignableFrom(exception.type().classRep()))) {
+        	JAST.compilationUnit.reportSemanticError(line(),
+				    "Throwed parameter must be throwable");
+        }
         return this;
     }
 
