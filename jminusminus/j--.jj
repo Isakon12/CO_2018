@@ -1567,7 +1567,7 @@ private JExpression assignmentExpression(): {
  * 
  * <pre>
  *   conditionalExpression :: = logicalOrExpression // level 12
- *  						{Q_MARK expression COLON expression logicalOrExpression}
+ *  						[Q_MARK conditionalExpression COLON conditionalExpression]
  * </pre>
  * 
  * @return an AST for a conditionalExpression.
@@ -1581,14 +1581,18 @@ private JExpression conditionalExpression(): {
 {
     try {
         lhs = logicalOrExpression() { line = lhs.line(); }
-        ( 
+        [ 
             <Q_MARK>
-            trueCond = expression()
+            trueCond = conditionalExpression()
+            //trueCond = logicalOrExpression()
+            //trueCond = expression()
             <COLON>
-            falseCond = expression()
+            falseCond = conditionalExpression()
+            //falseCond = logicalOrExpression()
+            //falseCond = expression()
             { lhs = new JConditionalExprOp(line, lhs, trueCond, 
                 		falseCond); }
-        )*
+        ]
     } 
     catch ( ParseException e ) { 
         recoverFromError( new int[] { SEMI, EOF }, e ); 
