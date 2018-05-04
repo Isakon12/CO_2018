@@ -105,7 +105,7 @@ assignmentExpression ::= conditionalExpression  // must be a valid lhs level 13
                            assignmentExpression]
                            
 conditionalExpression :: = logicalOrExpression // level 12
-							{Q_MARK expression COLON expression logicalOrExpression}
+							{Q_MARK conditionalExpression COLON logicalOrExpression}
 
 logicalOrExpression ::= conditionalAndExpression // level 11
                                {LOR conditionalAndExpression}

@@ -138,5 +138,33 @@ class JConditionalExprOp extends JConditionalExpression {
         rexp.codegen(output);
         output.addLabel(endLabel);
     }
+    
+    public void codegen(CLEmitter output, String targetLabel, boolean onTrue) {
+    	String midLabel = output.createLabel();
+        String endLabel = output.createLabel();
 
+        if(onTrue) {
+        condition.codegen(output, midLabel, true);
+	        if(rexp instanceof JLiteralTrue) 
+	        	output.addBranchInstruction(GOTO, targetLabel);
+	        else
+	        	output.addBranchInstruction(GOTO, endLabel);
+	        output.addLabel(midLabel); 		
+	
+	        if(lexp instanceof JLiteralFalse) 
+	        	output.addBranchInstruction(GOTO, targetLabel);
+	        output.addLabel(endLabel);
+        } else {
+	        condition.codegen(output, midLabel, false);
+	        if(lexp instanceof JLiteralTrue) 
+	        	output.addBranchInstruction(GOTO, endLabel);
+	        else
+	        	output.addBranchInstruction(GOTO, targetLabel);
+	        output.addLabel(midLabel); 		
+	
+	        if(rexp instanceof JLiteralFalse) 
+	        		output.addBranchInstruction(GOTO, targetLabel);
+	        output.addLabel(endLabel);
+        }
+    }
 }

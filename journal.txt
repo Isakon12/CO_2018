@@ -80,8 +80,6 @@ https://stackoverflow.com/questions/23291670/is-foreach-loop-literally-rewritten
 --> STEP 5
 /// TODO
 	
-	cond expresions
-	
 /// DONE
 	interface
 	static instance 
@@ -89,4 +87,6 @@ https://stackoverflow.com/questions/23291670/is-foreach-loop-literally-rewritten
 	double 
 	exceptions
 	|| -= *= /= %= prefix-- postfix++
+	cond expresions 
+
 			
