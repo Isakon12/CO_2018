@@ -169,7 +169,6 @@ class JVariable extends JExpression implements JLhs {
                         break;
                     }
                 } else if (type == Type.DOUBLE) {
-                	offset--;
                 	switch (offset) {
                     case 0:
                         output.addNoArgInstruction(DLOAD_0);
@@ -315,7 +314,6 @@ class JVariable extends JExpression implements JLhs {
                         break;
                     }
                 } else if (type == Type.DOUBLE) {
-                	offset--;
                 	switch (offset) {
                     case 0:
                         output.addNoArgInstruction(DSTORE_0);

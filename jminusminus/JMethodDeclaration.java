@@ -175,7 +175,7 @@ class JMethodDeclaration
         for (JFormalParameter param : params) {
         	int offset = this.context.nextOffset();
         	if(param.type() == Type.DOUBLE)
-        		offset = this.context.nextOffset();
+        		this.context.nextOffset();
             LocalVariableDefn defn = new LocalVariableDefn(param.type(), 
                 offset);
             defn.initialize();

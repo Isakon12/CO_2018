@@ -3,6 +3,8 @@
 package jminusminus;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+
 import static jminusminus.CLConstants.*;
 
 /**
@@ -104,7 +106,7 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
         for (JFormalParameter param : params) {
         	int offset = this.context.nextOffset();
         	if(param.type() == Type.DOUBLE)
-        		offset = this.context.nextOffset();
+        		this.context.nextOffset();
             LocalVariableDefn defn = new LocalVariableDefn(param.type(),
 				      offset);
             defn.initialize();
@@ -113,6 +115,21 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
         if (body != null) {
             body = body.analyze(this.context);
         }
+        if(body != null) {
+        	HashSet<Type> throwedExceptions = body.throwedExceptions();
+            if (throwedExceptions.size() != 0) {
+            	for(Type throwed : throwedExceptions) {
+            		boolean found = false;
+            		for(Type exp : exceptions) 
+                		if(exp.equals(throwed)) found = true;
+            		if(!found) {
+            			JAST.compilationUnit.reportSemanticError(line(),
+            				    "Exception throwed but not declared as throws");
+            		}
+        		}
+            }
+        }
+        
         return this;
 
     }

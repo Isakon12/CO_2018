@@ -98,7 +98,7 @@ class JVariableDeclaration extends JStatement {
             // in preAnalyze())
             int offset = ((LocalContext) context).nextOffset();
             if(decl.type() == Type.DOUBLE)
-                offset = ((LocalContext) context).nextOffset();
+                ((LocalContext) context).nextOffset();
             LocalVariableDefn defn = new LocalVariableDefn(decl.type().resolve(
                     context), offset);
 
